@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [[ "$#" -ne 1 ]]; then
+    echo "Usage: hostfile"
+else
+    updateSmmProject
+    mpiBasic $1 1 /smmProject/utilities/bin/helloworld
+fi

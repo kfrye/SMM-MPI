@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if [[ "$#" -ne 4 ]]; then
+    echo "Usage: run min max hostfile testtype"
+    exit 1
+fi
+
+MAXRUN=6
+MIN=$1
+MAX=$2
+HOSTFILE=$3
+TESTTYPE=$3
+x=$MAX
+r=1
+
+for j in S W A B C D E; do
+#for j in E; do
+#for j in D E; do
+    while [ $x -ge $MIN ]; do
+        while [ $r -le $MAXRUN ]; do
+            echo $i $j $x
+            testRunner $testtype $HOSTFILE $j $x
+            r=$(($r+1))
+        done
+        r=1
+        x=$(($x/2))
+    done
+    x=$1
+done

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+resetGroup
+cd /smmProject
+for i in wyeast{01..17}; do
+    sudo rsync -ra . $i:/smmProject
+done

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [[ "$#" -ne 2 ]]; then
+    echo "Usage: copyToAll path1 path2"
+else
+    for i in wyeast{01..17}; do
+        scp -r $1 $i:$2
+    done
+fi
+

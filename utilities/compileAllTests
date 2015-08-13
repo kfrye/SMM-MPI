@@ -1,0 +1,18 @@
+#!/bin/bash
+
+MIN=1
+MAX=$1
+x=1
+
+for i in bt cg dt ep ft is lu mg or sp; do
+    for j in S W A B C D E; do
+        while [ $x -le $MAX ]; do
+            echo $i $j $x
+            echo "make $i NPROCS=$x CLASS=$j"
+            make $i NPROCS=$x CLASS=$j
+            x=$(($x*2))
+        done
+        x=$MIN
+    done
+done
+   
