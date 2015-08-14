@@ -9,9 +9,7 @@ class Test:
         pass
 
 
-
-
-#CREATE TABLE EP
+# CREATE TABLE EP
 #       (
 #       "CPU_TIME          "REAL NOT NULL,
 #       "MOP_S_TOTAL       "REAL NOT NULL,
@@ -43,61 +41,71 @@ class Test:
 #       );
 
 class ep(Test):
-    name="EP"
+    name = "EP"
     data = []
-    reals=["CPU_TIME", "MOP_S_TOTAL", "MOP_S_PROCESS", "TIME_IN_SECONDS"]
-    ints=["COMPILED_PROCS", "ITERATIONS", "SIZE", "TOTAL_PROCESSES", "EPOCH"]
-    #Hardcoding is bad and will bite me in the but one day.
-    not_text=["CPU_TIME","COMPILED_PROCS","ITERATIONS","MOP_S_TOTAL","MOP_S_PROCESS","SIZE","TIME_IN_SECONDS","TOTAL_PROCESSES"]
+    key = "START_TIME"
+    reals = ["CPU_TIME", "MOP_S_TOTAL", "MOP_S_PROCESS", "TIME_IN_SECONDS"]
+    ints = ["COMPILED_PROCS", "ITERATIONS", "SIZE", "TOTAL_PROCESSES", "SMI_COUNT", "SMI_SIZE", "SMI_FREQUENCY",
+            "PROCS_PER_NODE"]
+    # Hardcoding is bad and will bite me in the but one day.
+    not_text = ["CPU_TIME", "COMPILED_PROCS", "ITERATIONS", "MOP_S_TOTAL", "MOP_S_PROCESS", "SIZE", "TIME_IN_SECONDS",
+                "TOTAL_PROCESSES"]
+
     def __init__(self, jsonEPTests):
-        self.data = jsonEPTests 
+        self.data = jsonEPTests['ep']
         self.conn = sqlite3.connect('results.db')
         self.initTable()
-        for item in  data:
+        for item in self.data:
             EpTest(item, self.conn)
 
         self.conn.commit()
-        conn.close()
+        self.conn.close()
 
-    def initTable():
-        tempdata=data[0]
-        schemaHeader="CREATE TABLE IF NOT EXISTS %s" % (self.name)
-        schemaFields=buildSchemaString(tempdata)
+    def initTable(self):
+        tempdata = self.data[0]
+        schemaHeader = "CREATE TABLE IF NOT EXISTS %s" % (self.name)
+        schemaFields = self.buildSchemaString(tempdata)
         print "Opened database successfully";
-        
-        self.conn.execute("%s %s;" % (schemaHeader, schemaFields))
+        finalSQLCREATE = "%s\n %s;" % (schemaHeader, schemaFields)
+
+        self.conn.execute(finalSQLCREATE)
 
         print "Table created successfully";
-    def buildSchemaString(jsonTest):
-        keys = "("
-        values = ""
-        for key in self.my_data:
-            data_info = " "            
+
+    def buildSchemaString(self, jsonTest):
+        keys = ""
+        for key in jsonTest:
+            data_info = " "
             if key in self.reals:
-                data_info += "REAL NOT NULL"            
+                data_info += "REAL NOT NULL"
             elif key in self.ints:
-                data_info += "INT NOT NULL"            
+                data_info += "INT NOT NULL"
+            elif key == self.key:
+                data_info = key + " INT PRIMARY KEY NOT NULL"
+                keys = "(" + data_info + ",\n" + keys
+                continue
             else:
-                 data_info += "TEXT NOT NULL"            
-            keys += key + data_info + ","
-            
-        keys += keys[:-1]+")"
+                data_info += "TEXT NOT NULL"
+            keys += key + data_info + ",\n"
+
+        keys = keys[:-2] + "\n)"
         return keys
-        
-        
 
 
 class EpTest:
-    my_data={}
-    #Hardcoding is bad and will bite me in the but one day.
-    not_text=["CPU_TIME","COMPILED_PROCS","ITERATIONS","MOP_S_TOTAL","MOP_S_PROCESS","SIZE","TIME_IN_SECONDS","TOTAL_PROCESSES"]
+    my_data = {}
+    # Hardcoding is bad and will bite me in the but one day.
+    not_text = ["CPU_TIME", "COMPILED_PROCS", "ITERATIONS", "MOP_S_TOTAL", "MOP_S_PROCESS", "SIZE", "TIME_IN_SECONDS",
+                "TOTAL_PROCESSES"]
+
     def __init__(self, json_ep, conn):
         self.my_data = json_ep
         self.add_to_database(conn)
+
     def add_to_database(self, conn):
-        keys, values  = self.buildKeysAndValues()
-        conn.execute("INSERT INTO EP (%s) VALUES (%s)" % (keys, values)
-               )
+        keys, values = self.buildKeysAndValues()
+        conn.execute("INSERT OR IGNORE INTO EP (%s) VALUES (%s)" % (keys, values)
+                     )
 
     @staticmethod
     def add_quotes(string):
@@ -108,12 +116,12 @@ class EpTest:
         keys = ""
         values = ""
         for key in self.my_data:
-            keys+=key+','
+            keys += key + ','
             val = self.my_data[key];
             if key in self.not_text:
-                values+=val+","
+                values += val + ","
             else:
-                values+=self.add_quotes(val)+","
+                values += self.add_quotes(val) + ","
 
         return keys[:-1], values[:-1]
 
@@ -123,4 +131,3 @@ with open("data.txt") as json_file:
     json_data = json.load(json_file)
 
 testsHolder = ep(json_data)
-
