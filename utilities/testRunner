@@ -10,11 +10,13 @@ else
     WORLDSIZE=$3
     NPROC=$4
     #binary path is hardcoded, sorry
-    BINPATH='/smmProject/SMM-MPI/NPB3.3.1/NPB3.3-MPI/bin/'
+    BINPATH='/smmProject/NPB3/NPB3.3-MPI/bin/'
     
     FNAME="$TESTNAME.$WORLDSIZE.$NPROC"
-    RESULTDIR="/smmProject/results/$TESTNAME/$WORLDSIZE/$NPROC"
-    RESULTSLOC="/smmProject/results/$TESTNAME/$WORLDSIZE/$NPROC"
+    #RESULTDIR="/smmProject/results/$TESTNAME/$WORLDSIZE/$NPROC"
+    #RESULTSLOC="/smmProject/results/$TESTNAME/$WORLDSIZE/$NPROC"
+    RESULTDIR="/smmProject/results/$TESTNAME"
+    RESULTSLOC="/smmProject/results/$TESTNAME"
     echo "ResultDir $RESULTDIR"
     echo `test -d $RESULTDIR`
 
@@ -28,7 +30,6 @@ else
 
     echo "destination file $DESTINATIONFILE"
 
-    size=16
     mpiBasic $HOSTFILE $NPROC $TESTPATH &> $DESTINATIONFILE
     #mpiBasic $HOSTFILE $NPROC $TESTPATH
 fi
