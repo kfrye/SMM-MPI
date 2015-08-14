@@ -17,50 +17,38 @@ resultDict = {}
 
 print "Gathering Results"
 
-
-tests = os.listdir(args.resultsLoc)
+#For example results are in ../results/ep/...
+tests = os.listdir(args.resultsLoc) #list of folder in ../results/..
 for test in tests:
     if test.startswith("."):
         continue
     resultsDirPath = args.resultsLoc + "/" + test + "/"
-    worldSizes = os.listdir(resultsDirPath)
+    files = os.listdir(resultsDirPath) 
     resultDict[test] = {}
-    for worldSize in worldSizes:
-        if worldSize.startswith("."):
+    count = 1
+    for f in files:
+        if f.startswith("."):
             continue
-        resultDict[test][worldSize] = {}
-        currentPath = resultsDirPath + worldSize + "/"
-        nProcs = os.listdir(currentPath)
-        for nProc in nProcs:
-            if nProc.startswith("."):
-                continue
-            resultDict[test][worldSize][nProc] = {}
-            currentPath = resultsDirPath + worldSize + "/" + nProc
-            files = os.listdir(currentPath)
-            count = 1
-            for f in files:
-                if f.startswith("."):
-                    continue
-                resultDict[test][worldSize][nProc][count] = {}
-                with open(currentPath + "/" + f, 'r') as result:
-                    for line in result:
-                        l = line.strip()
-                        l = re.sub(r'[ ]*=[ ]*', '=', l)
-                        a = l.split("=")
-                        if len(l.split("=")) == 2:
-                            s = a[0]
-                            s = re.sub(r'  ', '', s)
-                            s = re.sub(r'  ', '', s)
-                            s = re.sub(r'[.]', '', s)
-                            s = re.sub(r' |[/]', '_', s)
-                            s = s.upper()
-                            rs = re.sub(r'  ', '', a[1])
-                            resultDict[test][worldSize][nProc][count][s] = rs;
-                if len(resultDict[test][worldSize][nProc][count]) == 0:
-                    del resultDict[test][worldSize][nProc][count]
-                    count -= 1
-                count += 1
-            count = 1
+        resultDict[test][count] = {}
+        with open(currentPath + "/" + f, 'r') as result:
+            for line in result:
+                l = line.strip()
+                l = re.sub(r'[ ]*=[ ]*', '=', l)
+                a = l.split("=")
+                if len(l.split("=")) == 2:
+                    s = a[0]
+                    s = re.sub(r'  ', '', s)
+                    s = re.sub(r'  ', '', s)
+                    s = re.sub(r'[.]', '', s)
+                    s = re.sub(r' |[/]', '_', s)
+                    s = s.upper()
+                    rs = re.sub(r'  ', '', a[1])
+                    resultDict[test][count][s] = rs;
+        if len(resultDict[test][count]) == 0:
+            del resultDict[test][count]
+            count -= 1
+        count += 1
+    count = 1
 
 outfile = 'data.txt'
 try:

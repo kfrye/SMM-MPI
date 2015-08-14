@@ -1,16 +1,24 @@
 #!/bin/bash
 
-if [[ "$#" -ne 4 ]]; then
-    echo "Usage: testype hostfile worldsize nproc"
+if [[ "$#" -ne 5 ]]; then
+    echo "testRunner ERROR: expected 5 arguments, got $#" 
+    echo "$1"
+    echo "$2"
+    echo "$3"
+    echo "$4"
+    echo "Usage: testype hostfile worldsize nproc procs_per_node"
     echo ""
-    echo "example: ep /smmProject/hosts S 4"
+    echo "example: ep /smmProject/hosts S 4 1"
 else
+    Color_OFF="[0m"
+    Color1="[31m"
+    sleep 2s
     TESTNAME=$1
-    HOSTFILE=$2 
+    HOSTFILE=$2
     WORLDSIZE=$3
     NPROC=$4
     #binary path is hardcoded, sorry
-    BINPATH='/smmProject/NPB3/NPB3.3-MPI/bin/'
+    BINPATH='/smmProject/NPB/NPB3.3-MPI/bin/'
     
     FNAME="$TESTNAME.$WORLDSIZE.$NPROC"
     #RESULTDIR="/smmProject/results/$TESTNAME/$WORLDSIZE/$NPROC"
@@ -31,5 +39,11 @@ else
     echo "destination file $DESTINATIONFILE"
 
     mpiBasic $HOSTFILE $NPROC $TESTPATH &> $DESTINATIONFILE
-    #mpiBasic $HOSTFILE $NPROC $TESTPATH
+    echo "proc per node    =  $5" >> $DESTINATIONFILE
+    
+    #This must be change to fetching actual information
+    echo "$Color1*************** SMI RESULTS ARE IGNORED TO CHANGE EDIT /smmProject/utilities/testRunner *********************$Color_OFF"
+    echo "smi count        =   0" >> $DESTINATIONFILE
+    echo "smi size         =   0" >> $DESTINATIONFILE
+    echo "smi frequency    =   0" >> $DESTINATIONFILE
 fi
