@@ -10,7 +10,7 @@ cursor = conn.execute("""
 for row in cursor:
     print row
 
-cursor = conn.execute(""" SELECT CPU_TIME from EP WHERE CLASS='D' AND TOTAL_PROCESSES=4""")
+cursor = conn.execute(""" SELECT CPU_TIME from EP WHERE CLASS='E' AND TOTAL_PROCESSES=16""")
 
 for row in cursor:
     print row

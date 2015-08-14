@@ -23,14 +23,16 @@ for test in tests:
     if test.startswith("."):
         continue
     resultsDirPath = args.resultsLoc + "/" + test + "/"
-    files = os.listdir(resultsDirPath) 
-    resultDict[test] = {}
-    count = 1
+    try:
+        files = os.listdir(resultsDirPath)
+    except OSError:
+        continue
+    resultDict[test] = []
     for f in files:
         if f.startswith("."):
             continue
-        resultDict[test][count] = {}
-        with open(currentPath + "/" + f, 'r') as result:
+        with open(resultsDirPath + f, 'r') as result:
+            thisItem = {}
             for line in result:
                 l = line.strip()
                 l = re.sub(r'[ ]*=[ ]*', '=', l)
@@ -43,12 +45,9 @@ for test in tests:
                     s = re.sub(r' |[/]', '_', s)
                     s = s.upper()
                     rs = re.sub(r'  ', '', a[1])
-                    resultDict[test][count][s] = rs;
-        if len(resultDict[test][count]) == 0:
-            del resultDict[test][count]
-            count -= 1
-        count += 1
-    count = 1
+                    thisItem[s] = rs;
+        if not len(thisItem) == 0:
+            resultDict[test].append(thisItem)
 
 outfile = 'data.txt'
 try:
