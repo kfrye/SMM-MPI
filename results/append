@@ -1,8 +1,7 @@
 #!/bin/bash
 
+cd ep
 for i in *
 do 
-   echo "smi count        =   0" >> $i
-   echo "smi size         =   0" >> $i
-   echo "smi frequency    =   0" >> $i
+   echo "START_TIME    =   $i" >> $i
 done
