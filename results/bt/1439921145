@@ -1,0 +1,97 @@
+[warn] Epoll ADD(4) on fd 1 failed.  Old events were 0; read change was 0 (none); write change was 1 (add): Operation not permitted
+
+
+ NAS Parallel Benchmarks 3.3 -- BT Benchmark 
+
+ No input file inputbt.data. Using compiled defaults
+ Size:   12x  12x  12
+ Iterations:   60    dt:   0.0100000
+ Number of active processes:     4
+
+ BTIO -- FULL MPI-IO write interval:   5
+
+ Time step    1
+ Writing data set, time step           5
+ Writing data set, time step          10
+ Writing data set, time step          15
+ Time step   20
+ Writing data set, time step          20
+ Writing data set, time step          25
+ Writing data set, time step          30
+ Writing data set, time step          35
+ Time step   40
+ Writing data set, time step          40
+ Writing data set, time step          45
+ Writing data set, time step          50
+ Writing data set, time step          55
+ Time step   60
+ Writing data set, time step          60
+ Reading data set            1
+ Reading data set            2
+ Reading data set            3
+ Reading data set            4
+ Reading data set            5
+ Reading data set            6
+ Reading data set            7
+ Reading data set            8
+ Reading data set            9
+ Reading data set           10
+ Reading data set           11
+ Reading data set           12
+ Verification being performed for class S
+ accuracy setting for epsilon =  0.1000000000000E-07
+ Comparison of RMS-norms of residual
+           1 0.1703428370954E+00 0.1703428370954E+00 0.6680519237820E-14
+           2 0.1297525207005E-01 0.1297525207003E-01 0.9351949888112E-12
+           3 0.3252792698950E-01 0.3252792698949E-01 0.4859455174690E-12
+           4 0.2643642127515E-01 0.2643642127517E-01 0.7155062549945E-12
+           5 0.1921178413174E+00 0.1921178413174E+00 0.9101712010679E-14
+ Comparison of RMS-norms of solution error
+           1 0.1149036328945E+02 0.1149036328945E+02 0.4854294277047E-13
+           2 0.9156788904727E+00 0.9156788904727E+00 0.4195107810359E-13
+           3 0.2857899428614E+01 0.2857899428614E+01 0.9649723729104E-13
+           4 0.2598273346734E+01 0.2598273346734E+01 0.1391264769245E-12
+           5 0.2652795397547E+02 0.2652795397547E+02 0.3629324024933E-13
+ Verification Successful
+
+ BTIO -- statistics:
+   I/O timing in seconds   :           0.59
+   I/O timing percentage   :          27.57
+   Total data written (MB) :           0.83
+   I/O data rate  (MB/sec) :           1.40
+
+
+ BT Benchmark Completed.
+ Class           =                        S
+ Size            =             12x  12x  12
+ Iterations      =                       60
+ Time in seconds =                     2.16
+ Total processes =                        4
+ Compiled procs  =                        4
+ Mop/s total     =                   105.86
+ Mop/s/process   =                    26.46
+ Operation type  =           floating point
+ Verification    =               SUCCESSFUL
+ Version         =                    3.3.1
+ Compile date    =              14 Aug 2015
+
+ Compile options:
+    MPIF77       = mpif77
+    FLINK        = $(MPIF77)
+    FMPI_LIB     = -L/usr/lib64/openmpi/lib/ -lmpi
+    FMPI_INC     = -I/usr/include/openmpi-x86_64/
+    FFLAGS       = -O
+    FLINKFLAGS   = -O
+    RAND         = (none)
+
+
+ Please send feedbacks and/or the results of this run to:
+
+ NPB Development Team 
+ Internet: npb@nas.nasa.gov
+
+
+proc per node    =  4
+smi count        =   0
+smi size         =   0
+smi frequency    =   0

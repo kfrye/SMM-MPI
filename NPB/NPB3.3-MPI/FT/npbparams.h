@@ -1,4 +1,4 @@
-c NPROCS = 4096 CLASS = E
+c NPROCS = 1 CLASS = C
 c  
 c  
 c  This file is generated automatically by the setparams utility.
@@ -6,16 +6,16 @@ c  It sets the number of processors and the class of the NPB
 c  in this directory. Do not modify it by hand.
 c  
         integer nx, ny, nz, maxdim, niter_default, ntdivnp, np_min
-        parameter (nx=4096, ny=2048, nz=2048, maxdim=4096)
-        parameter (niter_default=25)
-        parameter (np_min = 4096)
+        parameter (nx=512, ny=512, nz=512, maxdim=512)
+        parameter (niter_default=20)
+        parameter (np_min = 1)
         parameter (ntdivnp=((nx*ny)/np_min)*nz)
         double precision ntotal_f
         parameter (ntotal_f=1.d0*nx*ny*nz)
         logical  convertdouble
         parameter (convertdouble = .false.)
         character*11 compiletime
-        parameter (compiletime='04 Aug 2015')
+        parameter (compiletime='16 Aug 2015')
         character*5 npbversion
         parameter (npbversion='3.3.1')
         character*6 cs1

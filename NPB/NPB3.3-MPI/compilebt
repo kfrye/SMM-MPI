@@ -1,0 +1,10 @@
+#!/bin/bash
+
+for i in S W A B C D E F; do
+    x=1
+    while [ $x -le  64 ]; do
+        make bt NPROCS=$x CLASS=$i SUBTYPE=full
+        x=$(($x+1))
+    done
+    x=1
+done

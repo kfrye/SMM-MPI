@@ -4,7 +4,7 @@ MIN=1
 MAX=$1
 x=1
 cd /smmProject/NPB/NPB3.3-MPI  
-for i in bt cg dt ep ft is lu mg or sp; do
+for i in bt; do
     for j in S W A B C D E; do
         while [ $x -le $MAX ]; do
             echo $i $j $x

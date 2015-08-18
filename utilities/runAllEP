@@ -1,9 +1,18 @@
 #!/bin/bash
 
-if [[ "$#" -ne 4 ]]; then
-    echo "Usage: run min max hostfile testtype"
+if [[ "$#" -ne 5 ]] && [[ "$#" -ne 6 ]]; then
+    echo "Usage: run min max hostfile testtype sizesfile [extension]"
     exit 1
 fi
+
+if [[ "$#" -eq 5 ]]; then
+    EXT=$6
+else
+    EXT=""
+fi
+
+updateSmmProject
+
 
 MAXRUN=6
 MIN=$1
@@ -14,20 +23,26 @@ x=$MAX
 r=1
 
 STARTTIME=`date +%s`
-for j in S W A B C D; do
+#for j in S W A B C D; do
+#for j in D; do
+while read j; do
 #for j in E; do
 #for j in D E; do
     while [ $x -ge $MIN ]; do
         while [ $r -le $MAXRUN ]; do
             echo $i $j $x
-            testRunner $TESTTYPE $HOSTFILE $j $x $MIN
+            if ! testRunner $TESTTYPE $HOSTFILE $j $x $MIN $EXT ; then
+                echo "test exited with error"
+                break
+            fi
+            echo $?
             r=$(($r+1))
         done
         r=1
-        x=$(($x/2))
+        x=$(($x-1))
     done
     x=$2
-done
+done < $5
 ENDTIME=`date +%s`
 TOTALTIME=$((($ENDTIME-$STARTTIME)/60))
 

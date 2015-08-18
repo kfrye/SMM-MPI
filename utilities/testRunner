@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ "$#" -ne 5 ]]; then
+if [[ "$#" -ne 5 ]] && [[ "$#" -ne 6 ]]; then
     echo "testRunner ERROR: expected 5 arguments, got $#" 
     echo "$1"
     echo "$2"
@@ -9,41 +9,58 @@ if [[ "$#" -ne 5 ]]; then
     echo "Usage: testype hostfile worldsize nproc procs_per_node"
     echo ""
     echo "example: ep /smmProject/hosts S 4 1"
-else
-    Color_OFF="[0m"
-    Color1="[31m"
-    sleep 2s
-    TESTNAME=$1
-    HOSTFILE=$2
-    WORLDSIZE=$3
-    NPROC=$4
-    #binary path is hardcoded, sorry
-    BINPATH='/smmProject/NPB/NPB3.3-MPI/bin/'
-    
-    FNAME="$TESTNAME.$WORLDSIZE.$NPROC"
-    #RESULTDIR="/smmProject/results/$TESTNAME/$WORLDSIZE/$NPROC"
-    #RESULTSLOC="/smmProject/results/$TESTNAME/$WORLDSIZE/$NPROC"
-    RESULTDIR="/smmProject/results/$TESTNAME"
-    RESULTSLOC="/smmProject/results/$TESTNAME"
-    echo "ResultDir $RESULTDIR"
-    echo `test -d $RESULTDIR`
+    exit 1
+fi
 
-    if [ ! -d $RESULTDIR ]; then
-         mkdir -p $RESULTDIR
-    fi
-    TESTPATH="$BINPATH$FNAME"
+if [[ "$#" -eq 6 ]]; then
+    EXT=".$6"
+else 
+    EXT=""
+fi
 
+Color_OFF="[0m"
+Color1="[31m"
+sleep 1s
+TESTNAME=$1
+HOSTFILE=$2
+WORLDSIZE=$3
+NPROC=$4
+#binary path is hardcoded, sorry
+BINPATH='/smmProject/NPB/NPB3.3-MPI/bin/'
+
+FNAME="$TESTNAME.$WORLDSIZE.$NPROC$EXT"
+#RESULTDIR="/smmProject/results/$TESTNAME/$WORLDSIZE/$NPROC"
+#RESULTSLOC="/smmProject/results/$TESTNAME/$WORLDSIZE/$NPROC"
+RESULTDIR="/smmProject/results/$TESTNAME"
+RESULTSLOC="/smmProject/results/$TESTNAME"
+echo "ResultDir $RESULTDIR"
+echo `test -d $RESULTDIR`
+
+if [ ! -d $RESULTDIR ]; then
+     mkdir -p $RESULTDIR
+fi
+TESTPATH="$BINPATH$FNAME"
+if [ -e $TESTPATH ]; then
     EPOCHTIME=`date +%s`
     DESTINATIONFILE="$RESULTDIR/$EPOCHTIME"
 
     echo "destination file $DESTINATIONFILE"
 
+#    mpiBasic $HOSTFILE $NPROC $TESTPATH 
+#    echo "proc per node    =  $5"
+#    echo "smi count        =   0"
+#    echo "smi size         =   0"
+#    echo "smi frequency    =   0"
+
     mpiBasic $HOSTFILE $NPROC $TESTPATH &> $DESTINATIONFILE
     echo "proc per node    =  $5" >> $DESTINATIONFILE
-    
+
     #This must be change to fetching actual information
     echo "$Color1*************** SMI RESULTS ARE IGNORED TO CHANGE EDIT /smmProject/utilities/testRunner *********************$Color_OFF"
     echo "smi count        =   0" >> $DESTINATIONFILE
     echo "smi size         =   0" >> $DESTINATIONFILE
     echo "smi frequency    =   0" >> $DESTINATIONFILE
+else
+    echo "ERROR file $TESTPATH doesnt exits"
+    exit 111
 fi

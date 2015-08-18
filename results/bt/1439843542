@@ -1,0 +1,65 @@
+[warn] Epoll ADD(4) on fd 1 failed.  Old events were 0; read change was 0 (none); write change was 1 (add): Operation not permitted
+--------------------------------------------------------------------------
+mpirun has exited due to process rank 24 with PID 14986 on
+node wyeast07 exiting improperly. There are three reasons this could occur:
+
+1. this process did not call "init" before exiting, but others in
+the job did. This can cause a job to hang indefinitely while it waits
+for all processes to call "init". By rule, if one process calls "init",
+then ALL processes must call "init" prior to termination.
+
+2. this process called "init", but exited without calling "finalize".
+By rule, all processes that call "init" MUST call "finalize" prior to
+exiting or it will be considered an "abnormal termination"
+
+3. this process called "MPI_Abort" or "orte_abort" and the mca parameter
+orte_create_session_dirs is set to false. In this case, the run-time cannot
+detect that the abort call was an abnormal termination. Hence, the only
+error message you will receive is this one.
+
+This may have caused other processes in the application to be
+terminated by signals sent by mpirun (as reported here).
+
+You can avoid this message by specifying -quiet on the mpirun command line.
+
+--------------------------------------------------------------------------
+
+
+ NAS Parallel Benchmarks 3.3 -- BT Benchmark 
+
+ No input file inputbt.data. Using compiled defaults
+ Size:  408x 408x 408
+ Iterations:  250    dt:   0.0000200
+ Number of active processes:    25
+
+ BTIO -- FULL MPI-IO write interval:   5
+
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+ Error opening file
+proc per node    =  4
+smi count        =   0
+smi size         =   0
+smi frequency    =   0

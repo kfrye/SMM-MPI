@@ -1,0 +1,10 @@
+[warn] Epoll ADD(4) on fd 1 failed.  Old events were 0; read change was 0 (none); write change was 1 (add): Operation not permitted
+Killed by signal 2.
+Killed by signal 2.
+Killed by signal 2.
+Killed by signal 2.
+Killed by signal 2.
+proc per node    =  4
+smi count        =   0
+smi size         =   0
+smi frequency    =   0
