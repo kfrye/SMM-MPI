@@ -17,6 +17,37 @@ resultDict = {}
 
 print "Gathering Results"
 
+def normalize_entries(s, rs):
+    s = s.strip()
+    s = re.sub(r'  ', '', s)
+    s = re.sub(r'  ', '', s)
+    s = re.sub(r'[.]', '', s)
+    s = re.sub(r'[-]', '', s)
+    s = re.sub(r' |[/]|[(]|[)]', '_', s)
+    s = s.upper()
+    rs = rs.strip()
+    try:
+        rs = int(rs)
+    except ValueError:
+        try:
+            rs = float(rs)
+        except ValueError:
+            pass
+    return s, rs
+
+def normalize_data(line):
+    l = line.strip()
+    l = re.sub(r'[ ]*=[ ]*', '=', l)
+    l = re.sub(r'[[]warn[]].*',"", l)
+    a = l.split("=")
+    b = l.split(":")
+    if len(a) == 2 and len(a[1]) > 0:
+        return normalize_entries(a[0], a[1])
+    elif len(b) == 2 and len(b[1]) > 0:
+        return normalize_entries(b[0], b[1])
+    else:
+        return None, None
+
 #For example results are in ../results/ep/...
 tests = os.listdir(args.resultsLoc) #list of folder in ../results/..
 for test in tests:
@@ -34,18 +65,11 @@ for test in tests:
         with open(resultsDirPath + f, 'r') as result:
             thisItem = {}
             for line in result:
-                l = line.strip()
-                l = re.sub(r'[ ]*=[ ]*', '=', l)
-                a = l.split("=")
-                if len(l.split("=")) == 2:
-                    s = a[0]
-                    s = re.sub(r'  ', '', s)
-                    s = re.sub(r'  ', '', s)
-                    s = re.sub(r'[.]', '', s)
-                    s = re.sub(r' |[/]', '_', s)
-                    s = s.upper()
-                    rs = re.sub(r'  ', '', a[1])
+                s, rs = normalize_data(line)
+                if s is not None and rs is not None and not s in thisItem:
                     thisItem[s] = rs;
+            if "START_TIME" not in thisItem:
+                thisItem["START_TIME"] = int(f)
         if not len(thisItem) == 0:
             resultDict[test].append(thisItem)
 
@@ -56,5 +80,4 @@ except OSError:
     pass
 
 with open(outfile, 'w') as outfile:
-    json.dump(resultDict, outfile)
-
+    json.dump(resultDict, outfile, sort_keys=True, indent=4, separators=(',', ': '))

@@ -1,16 +1,30 @@
 __author__ = 'kmacarenco'
+from prettytable import PrettyTable
 import sqlite3
 
 conn = sqlite3.connect('results.db')
-cursor = conn.execute("""
-          SELECT * from EP WHERE CPU_TIME=(
-          SELECT MIN(CPU_TIME) from EP WHERE CLASS='S' AND TOTAL_PROCESSES=16)
-          """)
+curs = conn.cursor()
+curs.execute('SELECT TIME_IN_SECONDS, CLASS, TOTAL_PROCESSES, VERIFICATION FROM EP')
 
-for row in cursor:
-    print row
+col_names = [cn[0] for cn in curs.description]
+rows = curs.fetchall()
 
-cursor = conn.execute(""" SELECT CPU_TIME from EP WHERE CLASS='E' AND TOTAL_PROCESSES=16""")
+y=PrettyTable()
+y.padding_width = 1
 
-for row in cursor:
-    print row
+x = 0
+while x < len(col_names):
+    y.add_column(col_names[x],[row[x] for row in rows])
+    # y.align[col_names[x]]="l"
+    # y.align[col_names[2]]="r"
+    x +=1
+
+print(y)
+tabstring = y.get_string()
+
+output=open("export.txt","w")
+output.write("Population Data"+"\n")
+output.write(tabstring)
+output.close()
+
+conn.close()
