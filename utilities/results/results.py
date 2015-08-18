@@ -1,65 +1,24 @@
 #!/usr/bin/python
 import json
-import re
 import sqlite3
 
 
 class Test:
-    def __init__(self):
-        pass
-
-
-# CREATE TABLE EP
-#       (
-#       "CPU_TIME          "REAL NOT NULL,
-#       "MOP_S_TOTAL       "REAL NOT NULL,
-#       "MOP_S_PROCESS     "REAL NOT NULL,
-#       "TIME_IN_SECONDS   "REAL NOT NULL,
-#
-#       "COMPILED_PROCS    ",INT NOT NULL,
-#       "ITERATIONS        ",INT NOT NULL,
-#       "SIZE              ",INT NOT NULL,
-#       "TOTAL_PROCESSES   ",INT NOT NULL
-#       "EPOCH             ",INTEGER            PRIMARY KEY AUTOINCREMENT,
-#
-#       "FFLAGS            ",TEXT NOT NULL,
-#       "COMPILE_DATE      ",TEXT NOT NULL,
-#       "FLINK             ",TEXT NOT NULL,
-#       "FLINKFLAGS        ",TEXT NOT NULL,
-#       "FMPI_INC          ",TEXT NOT NULL,
-#       "FMPI_LIB          ",TEXT NOT NULL,
-#       "MPIF77            ",TEXT NOT NULL,
-#       "N                 ",TEXT NOT NULL,
-#       "NO_GAUSSIAN_PAIRS ",TEXT NOT NULL,
-#       "OPERATION_TYPE    ",TEXT NOT NULL,
-#       "RAND              ",TEXT NOT NULL,
-#       "SUMS              ",TEXT NOT NULL,
-#       "VERSION           ",TEXT NOT NULL,
-#       "VERIFICATION      ",TEXT NOT NULL,
-#       "CLASS             ",TEXT NOT NULL,
-#
-#       );
-
-class ep(Test):
-    name = "EP"
+    name = None
     data = []
     key = "START_TIME"
-    reals = ["CPU_TIME", "MOP_S_TOTAL", "MOP_S_PROCESS", "TIME_IN_SECONDS"]
-    ints = ["COMPILED_PROCS", "ITERATIONS", "SIZE", "TOTAL_PROCESSES", "SMI_COUNT", "SMI_SIZE", "SMI_FREQUENCY",
-            "PROCS_PER_NODE"]
-    # Hardcoding is bad and will bite me in the but one day.
-    not_text = ["CPU_TIME", "COMPILED_PROCS", "ITERATIONS", "MOP_S_TOTAL", "MOP_S_PROCESS", "SIZE", "TIME_IN_SECONDS",
-                "TOTAL_PROCESSES"]
 
     def __init__(self, jsonEPTests):
-        self.data = jsonEPTests['ep']
-        self.conn = sqlite3.connect('results.db')
-        self.initTable()
-        for item in self.data:
-            EpTest(item, self.conn)
+        for key in jsonEPTests:
+            self.name = key.upper()
+            self.data = jsonEPTests[key]
+            self.conn = sqlite3.connect('results.db')
+            self.initTable()
+            for item in self.data:
+                TestItem(item, self.conn, self.name)
 
-        self.conn.commit()
-        self.conn.close()
+            self.conn.commit()
+            self.conn.close()
 
     def initTable(self):
         tempdata = self.data[0]
@@ -75,15 +34,16 @@ class ep(Test):
     def buildSchemaString(self, jsonTest):
         keys = ""
         for key in jsonTest:
+            value = jsonTest[key]
             data_info = " "
-            if key in self.reals:
-                data_info += "REAL NOT NULL"
-            elif key in self.ints:
-                data_info += "INT NOT NULL"
-            elif key == self.key:
+            if key == self.key:
                 data_info = key + " INT PRIMARY KEY NOT NULL"
                 keys = "(" + data_info + ",\n" + keys
                 continue
+            elif type(value) is float:
+                data_info += "REAL NOT NULL"
+            elif type(value) is int:
+                data_info += "INT NOT NULL"
             else:
                 data_info += "TEXT NOT NULL"
             keys += key + data_info + ",\n"
@@ -92,20 +52,24 @@ class ep(Test):
         return keys
 
 
-class EpTest:
+class TestItem:
     my_data = {}
-    # Hardcoding is bad and will bite me in the but one day.
-    not_text = ["CPU_TIME", "COMPILED_PROCS", "ITERATIONS", "MOP_S_TOTAL", "MOP_S_PROCESS", "SIZE", "TIME_IN_SECONDS",
-                "TOTAL_PROCESSES"]
+    tableName = None
 
-    def __init__(self, json_ep, conn):
+    def __init__(self, json_ep, conn, tableName):
+        self.tableName = tableName
         self.my_data = json_ep
         self.add_to_database(conn)
 
     def add_to_database(self, conn):
         keys, values = self.buildKeysAndValues()
-        conn.execute("INSERT OR IGNORE INTO EP (%s) VALUES (%s)" % (keys, values)
-                     )
+        try:
+            conn.execute("INSERT OR IGNORE INTO %s (%s) VALUES (%s)" % (self.tableName, keys, values))
+        except sqlite3.OperationalError, err:
+            conn.execute("ALTER TABLE %s ADD COLUMN FAILURE TEXT;" % (self.tableName))
+            conn.execute("INSERT OR IGNORE INTO %s (%s) VALUES (%s)" % (self.tableName, keys, values))
+            print err
+
 
     @staticmethod
     def add_quotes(string):
@@ -118,8 +82,8 @@ class EpTest:
         for key in self.my_data:
             keys += key + ','
             val = self.my_data[key];
-            if key in self.not_text:
-                values += val + ","
+            if type(val) is int or type(val) is float:
+                values += str(val) + ","
             else:
                 values += self.add_quotes(val) + ","
 
@@ -130,4 +94,4 @@ json_data = ""
 with open("data.txt") as json_file:
     json_data = json.load(json_file)
 
-testsHolder = ep(json_data)
+testsHolder = Test(json_data)
