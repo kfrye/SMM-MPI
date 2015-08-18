@@ -1,0 +1,3 @@
+#!/bin/bash
+
+sshrun ssh "top -b -n 1 | head -n 12  | tail -n 5"

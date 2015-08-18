@@ -3,5 +3,10 @@
 resetGroup
 cd /smmProject
 for i in wyeast{01..17}; do
-    sudo rsync -ra . $i:/smmProject
+
+    echo "Updating $i"
+    sudo rsync -rva . $i:/smmProject
+    echo ""
+    echo ""
+
 done

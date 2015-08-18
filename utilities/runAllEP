@@ -1,16 +1,25 @@
 #!/bin/bash
 
+Color_OFF="[0m"
+Color1="[31m"
+Color7="[37m"
+
 if [[ "$#" -ne 5 ]] && [[ "$#" -ne 6 ]]; then
     echo "Usage: run min max hostfile testtype sizesfile [extension]"
     exit 1
 fi
 
-if [[ "$#" -eq 5 ]]; then
+if [[ "$#" -eq 6 ]]; then
     EXT=$6
 else
     EXT=""
 fi
 
+echo "$Color7"
+echo "RUNNING TEST SUIT"
+echo ""
+echo "Updating /smmProject in the Cluster"
+echo "$ColorOFF"
 updateSmmProject
 
 
@@ -19,27 +28,36 @@ MIN=$1
 MAX=$2
 HOSTFILE=$3
 TESTTYPE=$4
-x=$MAX
+x=$MIN
 r=1
 
 STARTTIME=`date +%s`
-#for j in S W A B C D; do
-#for j in D; do
 while read j; do
-#for j in E; do
-#for j in D E; do
-    while [ $x -ge $MIN ]; do
+    while [ $x -le $MAX ]; do
         while [ $r -le $MAXRUN ]; do
-            echo $i $j $x
+            echo ""
+            echo ""
+            echo "$Color7"
+            echo "Current Test Parameters"
+            echo "World size              : $j"
+            echo "Number of processes     : $x"
+            echo "Extension               : $EXT"
+            echo "Test type               : $TESTTYPE"
+            echo "Hostfile                : $HOSTFILE"
+            echo "Minimum number of cores : $HOSTFILE"
+            echo "EXPERIMENT NUMBER       : $r"
+            echo "EXPERIMENTS MAXIMUM     : $MAXRUN"
+            echo "$ColorOFF"
+            echo ""
             if ! testRunner $TESTTYPE $HOSTFILE $j $x $MIN $EXT ; then
-                echo "test exited with error"
+                echo "SKIPPED"
                 break
             fi
             echo $?
             r=$(($r+1))
         done
         r=1
-        x=$(($x-1))
+        x=$(($x+1))
     done
     x=$2
 done < $5

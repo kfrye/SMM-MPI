@@ -6,6 +6,8 @@ if [[ "$#" -ne 5 ]] && [[ "$#" -ne 6 ]]; then
     echo "$2"
     echo "$3"
     echo "$4"
+    echo "$5"
+    echo "$6"
     echo "Usage: testype hostfile worldsize nproc procs_per_node"
     echo ""
     echo "example: ep /smmProject/hosts S 4 1"
@@ -20,6 +22,7 @@ fi
 
 Color_OFF="[0m"
 Color1="[31m"
+Color5="[35m"
 sleep 1s
 TESTNAME=$1
 HOSTFILE=$2
@@ -44,7 +47,15 @@ if [ -e $TESTPATH ]; then
     EPOCHTIME=`date +%s`
     DESTINATIONFILE="$RESULTDIR/$EPOCHTIME"
 
-    echo "destination file $DESTINATIONFILE"
+    echo "$Color5"
+    echo "     ###############################################"
+    echo "     ############### TEST RUN INFO #################"
+    echo "     ###############################################"
+    echo ""
+    echo ""
+    echo "Executable               : $TESTPATH"
+    echo "Results will be saved in : $DESTINATIONFILE"
+    echo "$ColorOFF"
 
 #    mpiBasic $HOSTFILE $NPROC $TESTPATH 
 #    echo "proc per node    =  $5"
@@ -60,6 +71,13 @@ if [ -e $TESTPATH ]; then
     echo "smi count        =   0" >> $DESTINATIONFILE
     echo "smi size         =   0" >> $DESTINATIONFILE
     echo "smi frequency    =   0" >> $DESTINATIONFILE
+    
+    echo "$Color5"
+    echo "CURRENT TEST COMPLETED"
+    echo ""
+    echo "***********************************************"
+    echo ""
+    echo "$ColorOFF"
 else
     echo "ERROR file $TESTPATH doesnt exits"
     exit 111
