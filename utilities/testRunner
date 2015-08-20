@@ -23,7 +23,7 @@ fi
 Color_OFF="[0m"
 Color1="[31m"
 Color5="[35m"
-sleep 1s
+sleep 2s
 TESTNAME=$1
 HOSTFILE=$2
 WORLDSIZE=$3
@@ -56,6 +56,7 @@ if [ -e $TESTPATH ]; then
     echo "Executable               : $TESTPATH"
     echo "Results will be saved in : $DESTINATIONFILE"
     echo "$ColorOFF"
+    echo "$Color1 Warning: SMI RESULTS ARE IGNORED TO CHANGE EDIT /smmProject/utilities/testRunner $Color_OFF"
 
 #    mpiBasic $HOSTFILE $NPROC $TESTPATH 
 #    echo "proc per node    =  $5"
@@ -67,15 +68,12 @@ if [ -e $TESTPATH ]; then
     echo "proc per node    =  $5" >> $DESTINATIONFILE
 
     #This must be change to fetching actual information
-    echo "$Color1*************** SMI RESULTS ARE IGNORED TO CHANGE EDIT /smmProject/utilities/testRunner *********************$Color_OFF"
     echo "smi count        =   0" >> $DESTINATIONFILE
     echo "smi size         =   0" >> $DESTINATIONFILE
     echo "smi frequency    =   0" >> $DESTINATIONFILE
     
     echo "$Color5"
     echo "CURRENT TEST COMPLETED"
-    echo ""
-    echo "***********************************************"
     echo ""
     echo "$ColorOFF"
 else
