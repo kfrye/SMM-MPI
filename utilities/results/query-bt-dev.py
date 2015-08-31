@@ -4,7 +4,7 @@ import statistics
 from decimal import *
 
 if len(sys.argv) != 2:
-  print("Syntax is: query-bt.py <# procs per node>")
+  print("Syntax is: query-bt-dev.py <# procs per node>")
   exit(1)
 procs = sys.argv[1]
 

@@ -1,6 +1,8 @@
 #!/bin/bash
 
-if [[ "$#" -ne 5 ]] && [[ "$#" -ne 6 ]]; then
+EXT=""
+
+myhelp() {
     echo "testRunner ERROR: expected 5 arguments, got $#" 
     echo "$1"
     echo "$2"
@@ -12,11 +14,64 @@ if [[ "$#" -ne 5 ]] && [[ "$#" -ne 6 ]]; then
     echo ""
     echo "example: ep /smmProject/hosts S 4 1"
     exit 1
-fi
+}
 
-if [[ "$#" -eq 6 ]]; then
-    EXT=".$6"
-else 
+if [[ "$#" -le 1 ]]; then
+    myhelp
+fi
+SCRIPT=$@
+while [[ $# > 1 ]]
+do
+key="$1"
+
+case $key in
+    --testtype)
+    TESTNAME=$2
+    shift # past argument
+    ;;
+    --hfile)
+    HOSTFILE="$2"
+    shift # past argument
+    ;;
+    --worldsize)
+    WORLDSIZE="$2"
+    shift # past argument
+    ;;
+    --nprocs)
+    NPROC="$2"
+    shift # past argument
+    ;;
+    --nprocspernode)
+    NPROCSPERNODE="$2"
+    shift # past argument
+    ;;
+    --ext)
+    EXT=".$2"
+    shift # past argument
+    ;;
+    --smitype)
+    SMITYPE="$2"
+    shift # past argument
+    ;;
+    -h|--help)
+    echo "HELP"
+    myhelp
+    ;;
+    --default)
+    DEFAULT=YES
+    ;;
+    *)
+    echo "Unknown argument encountered : $key . Exit"
+    myhelp
+            # unknown option
+    ;;
+esac
+shift # past argument or value
+done
+
+if [ $TESTNAME == "bt" ]; then
+    EXT=".mpi_io_full"
+else
     EXT=""
 fi
 
@@ -24,10 +79,6 @@ Color_OFF="[0m"
 Color1="[31m"
 Color5="[35m"
 sleep 2s
-TESTNAME=$1
-HOSTFILE=$2
-WORLDSIZE=$3
-NPROC=$4
 #binary path is hardcoded, sorry
 BINPATH='/smmProject/NPB/NPB3.3-MPI/bin/'
 
@@ -59,17 +110,17 @@ if [ -e $TESTPATH ]; then
     echo "$Color1 Warning: SMI RESULTS ARE IGNORED TO CHANGE EDIT /smmProject/utilities/testRunner $Color_OFF"
 
 #    mpiBasic $HOSTFILE $NPROC $TESTPATH 
-#    echo "proc per node    =  $5"
+#    echo "proc per node    =  $NPROCSPERNODE"
 #    echo "smi count        =   0"
 #    echo "smi size         =   0"
 #    echo "smi frequency    =   0"
 
     mpiBasic $HOSTFILE $NPROC $TESTPATH &> $DESTINATIONFILE
-    echo "proc per node    =  $5" >> $DESTINATIONFILE
+    echo "proc per node    =  $NPROCSPERNODE" >> $DESTINATIONFILE
 
     #This must be change to fetching actual information
     echo "smi count        =   0" >> $DESTINATIONFILE
-    echo "smi size         =   0" >> $DESTINATIONFILE
+    echo "smi size         =   $SMITYPE" >> $DESTINATIONFILE
     echo "smi frequency    =   0" >> $DESTINATIONFILE
     
     echo "$Color5"

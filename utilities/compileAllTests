@@ -1,16 +1,52 @@
 #!/bin/bash
 
+myhelp() {
+    echo " Compile all available NASA benchmarks"
+    echo "    -n    Max nprocs"
+    echo "Example: compileAllTests -n 64"
+    exit 1
+}
+
+if [[ "$#" -le 1 ]]; then
+    myhelp
+fi
+SCRIPT=$@
+while [[ $# > 1 ]]
+do
+key="$1"
+
+case $key in
+    -n)
+    MAX=$2
+    shift # past argument
+    ;;
+    *)
+    echo "Unknown argument encountered : $key . Exit"
+    myhelp
+            # unknown option
+    ;;
+esac
+shift # past argument or value
+done
+
+
 MIN=1
-MAX=$1
 x=1
+
 cd /smmProject/NPB/NPB3.3-MPI  
-for i in bt; do
+for i in ep bt ft; do
     for j in S W A B C D; do
         while [ $x -le $MAX ]; do
             echo $i $j $x
             echo "make $i NPROCS=$x CLASS=$j"
-            make $i NPROCS=$x CLASS=$j SUBTYPE=full
-            x=$(($x+1))
+            make $i NPROCS=$x CLASS=$j
+            if [ $i == "bt" ]; then
+                make $i NPROCS=$x CLASS=$j SUBTYPE=full
+                x=$(($x+1))
+            else
+                make $i NPROCS=$x CLASS=$j
+                x=$(($x*2))
+            fi
         done
         x=$MIN
     done

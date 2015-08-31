@@ -3,7 +3,6 @@
 if [[ "$#" -ne 1 ]]; then
     echo "Usage: hostfile"
 else
-    updateSmmProject
     size=16
     mpiBasic $1 $size /smmProject/utilities/bin/ring_c
 fi

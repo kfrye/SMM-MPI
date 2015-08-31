@@ -1,0 +1,24 @@
+#!/bin/bash
+
+TYPE=$1
+if [ $TYPE -eq 0 ]; then
+
+    echo "Disabling SMIS"
+    sshrun -v -t ssh -c disableSmi
+
+elif [ $TYPE -eq 1 ]; then
+
+    echo "ENABLING SHORT SMIS"
+
+    sshrun -v -t ssh -c enableShortSmi
+
+elif [ $TYPE -eq 2 ]; then
+
+    echo "ENABLING LONG SMIS"
+
+    sshrun -v -t ssh -c enableLongSmi
+
+else
+    echo "ERROR: unknown argument"
+    exit 1
+fi

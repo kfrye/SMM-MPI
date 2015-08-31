@@ -1,0 +1,79 @@
+#!/usr/bin/python
+__author__ = 'kmacarenco'
+
+import json
+import os
+import argparse
+import re
+import subprocess
+
+def hfilecheck(s):
+    correcthost=r'wyeast[0-9][0-9] slots[=][0-9]'
+    if not os.path.isfile(s):
+        raise argparse.ArgumentTypeError(s+ " not found")
+    with open(s, "r") as hostfile:
+        for line in hostfile:
+            if not re.match(correcthost, line.strip()):
+                 raise argparse.ArgumentTypeError("invalid host type " + line.strip())
+    return s
+
+def sfilecheck(s):
+    allowedsizes = [ "S" ,"W", "A", "B", "C", "D" ]
+    if not os.path.isfile(s):
+        raise argparse.ArgumentTypeError(s+ " not found")
+    with open(s, "r") as sizefile:
+        for line in sizefile:
+            if line.strip() not in allowedsizes:
+                 raise argparse.ArgumentTypeError("invalid size " + line.strip())
+                
+    return s
+
+def testtypecheck(s):
+    allowedtests = [ "ep" ,"ft", "bt" ]
+    if s not in allowedtests:
+        raise argparse.ArgumentTypeError(s+ " not a valid test")
+    return s
+        
+
+def extcheck(s):
+    allowedext = [ "", "mpi_io_full" ]
+    if s not in allowedext:
+        raise argparse.ArgumentTypeError(s+ " not a valid extension")
+    return s
+
+def smitypecheck(s):
+    allowedtests = [ "0" ,"1", "2" ]
+    if s not in allowedtests:
+        raise argparse.ArgumentTypeError("smitype "+ s+ " not supported")
+    return s
+
+parser = argparse.ArgumentParser(description="All options except [-ext] are requred: \n"+ "Example: runAllEP -minprocs 4 -maxprocs 64 -hfile /smmProject/hosts4 -type bt -sizefile /smmProject/S -enum 6 -smitype 0 -ext mpi_io_full")
+
+parser.add_argument('-m','--minprocs', dest='minprocs', type=int, help='Minimum number of processes', required=True)
+parser.add_argument('-M','--maxprocs', dest='maxprocs', type=int, help='Maximum Number of Processes', required=True)
+parser.add_argument('-H','--hfile', dest='hostfile', type=hfilecheck, help='HostFile Absolute path', required=True)
+parser.add_argument('-t','--type',  dest='type', type=testtypecheck, help='Testtype', required=True)
+parser.add_argument('-s','--sizefile',  dest='sizefile', type=sfilecheck, help='WorldSize file', required=True)
+parser.add_argument('-e','--enum', dest='enum', type=int, help='number of experiments', required=True)
+parser.add_argument('-S','--smitype', dest='smitype', type=smitypecheck, help='smytype = 0 [SMI OFF], = 1 [SHORT SMI], = 2 [LONG SMI]', required=True)
+parser.add_argument('-E','--ext', dest='ext', type=extcheck, help='<extension - optional>', required=False, default="")
+
+
+args = parser.parse_args()
+
+print args
+
+
+resultDict = {}
+ 
+os.system("/smmProject/utilities/runAllEP --minprocs "+ str(args.minprocs) + " --maxprocs " + str(args.maxprocs) + " --hfile " + args.hostfile + " --type "+ args.type+" --sizefile "+args.sizefile+" --enum "+str(args.enum)+" --smitype "+str(args.smitype)+" --ext "+args.ext)
+
+
+#outfile = 'data.txt'
+#try:
+#    os.remove(outfile)
+#except OSError:
+#    pass
+#
+#with open(outfile, 'w') as outfile:
+#    json.dump(resultDict, outfile, sort_keys=True, indent=4, separators=(',', ': '))
