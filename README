@@ -1,3 +1,8 @@
 1. Add utitlites folder to your path:
 
+
 export PATH=$PATH:/smmProject/utilities
+
+REMINDER:
+    Directories that should be shared between the nodes:
+    Directories that should be ignored
