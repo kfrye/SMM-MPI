@@ -1,30 +1,40 @@
-__author__ = 'kmacarenco'
-from prettytable import PrettyTable
+#!/bin/python3
 import sqlite3
+import sys
+from decimal import *
+
+if len(sys.argv) != 5:
+  print("Syntax is: query.py <test type> <# procs per node> <min/max> <smi size>")
+  exit(1)
+
+test = sys.argv[1]
+procs = sys.argv[2]
+func = sys.argv[3]
+smi = sys.argv[4]
 
 conn = sqlite3.connect('results.db')
+classes = ["S", "W", "A", "B", "C", "D", "E"]
+proc_1 = [1, 2, 4, 8, 16]
+proc_4 = [4, 8, 16, 32, 64]
+if procs == "1":
+  processes = proc_1
+else:
+  processes = proc_4
+
 curs = conn.cursor()
-curs.execute('SELECT TIME_IN_SECONDS, CLASS, TOTAL_PROCESSES, VERIFICATION FROM EP')
 
-col_names = [cn[0] for cn in curs.description]
-rows = curs.fetchall()
+print('#\t', end="")
+for c in classes:
+  print(c, end="\t")
 
-y=PrettyTable()
-y.padding_width = 1
-
-x = 0
-while x < len(col_names):
-    y.add_column(col_names[x],[row[x] for row in rows])
-    # y.align[col_names[x]]="l"
-    # y.align[col_names[2]]="r"
-    x +=1
-
-print(y)
-tabstring = y.get_string()
-
-output=open("export.txt","w")
-output.write("Population Data"+"\n")
-output.write(tabstring)
-output.close()
-
+for p in processes:
+  print(str('\n'+str(p)), end="\t")
+  for c in classes:
+    curs.execute('SELECT ' + func + '(TIME_IN_SECONDS) FROM ' + test + ' WHERE PROCS_PER_NODE=' + procs + ' AND TOTAL_PROCESSES=' + str(p) + ' AND CLASS="' + c + '" AND VERIFICATION="SUCCESSFUL" AND SMI_SIZE=' + smi)
+    data = curs.fetchone()
+    str_data = str(data[0])
+    if str_data != 'None':
+      num = float(str_data)
+      print(round(num,2), end="\t") 
+print('\n')
 conn.close()

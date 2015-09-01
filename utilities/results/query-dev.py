@@ -1,13 +1,17 @@
+#!/bin/python3
 import sqlite3
 import sys
 import statistics
 from decimal import *
 
-if len(sys.argv) != 2:
-  print("Syntax is: query-ft-dev.py <# procs per node>")
+if len(sys.argv) != 4:
+  print("Syntax is: query-dev.py <test type> <# procs per node> <smi size>")
   exit(1)
 
-procs = sys.argv[1]
+test = sys.argv[1]
+procs = sys.argv[2]
+smi = sys.argv[3]
+
 conn = sqlite3.connect('results.db')
 classes = ["S", "W", "A", "B", "C", "D", "E"]
 proc_1 = [1, 2, 4, 8, 16]
@@ -26,7 +30,7 @@ for c in classes:
 for p in processes:
   print(str('\n'+str(p)), end="\t")
   for c in classes:
-    curs.execute('SELECT TIME_IN_SECONDS FROM FT WHERE PROC_PER_NODE=' + procs + ' AND TOTAL_PROCESSES=' + str(p) + ' AND CLASS="' + c + '" AND VERIFICATION="SUCCESSFUL"')
+    curs.execute('SELECT TIME_IN_SECONDS FROM ' + test + ' WHERE PROCS_PER_NODE=' + procs + ' AND TOTAL_PROCESSES=' + str(p) + ' AND CLASS="' + c + '" AND VERIFICATION="SUCCESSFUL" AND SMI_SIZE=' + smi)
     data = curs.fetchall()
     values = [] 
     for val in data:

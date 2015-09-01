@@ -1,12 +1,14 @@
+#!/bin/python3
 import sqlite3
 import sys
 import statistics
 from decimal import *
 
-if len(sys.argv) != 2:
-  print("Syntax is: query-bt-dev.py <# procs per node>")
+if len(sys.argv) != 3:
+  print("Syntax is: query-bt-dev.py <# procs per node> <smi size>")
   exit(1)
 procs = sys.argv[1]
+smi = sys.argv[2]
 
 conn = sqlite3.connect('results.db')
 classes = ["S", "W", "A", "B", "C"]
@@ -26,7 +28,7 @@ for c in classes:
 for p in processes:
   print(str('\n'+str(p)), end="\t")
   for c in classes:
-    select_str = 'SELECT TIME_IN_SECONDS FROM bt WHERE PROC_PER_NODE=' + procs + ' AND TOTAL_PROCESSES=' + str(p) + ' AND CLASS="' + c + '" AND VERIFICATION="SUCCESSFUL"'
+    select_str = 'SELECT TIME_IN_SECONDS FROM bt WHERE PROCS_PER_NODE=' + procs + ' AND TOTAL_PROCESSES=' + str(p) + ' AND CLASS="' + c + '" AND VERIFICATION="SUCCESSFUL" AND SMI_SIZE=' + smi
     curs.execute(select_str)
     data = curs.fetchall()
     values = []

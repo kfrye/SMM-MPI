@@ -1,13 +1,15 @@
+#!/bin/python3
 import sqlite3
 import sys
 from decimal import *
 
-if len(sys.argv) != 3:
-  print("Syntax is: query-ep.py <# procs per node> <min/max>")
+if len(sys.argv) != 4:
+  print("Syntax is: query-bt.py <# procs per node> <min/max> <smi size>")
   exit(1)
 
 procs = sys.argv[1]
 func = sys.argv[2]
+smi = sys.argv[3]
 
 conn = sqlite3.connect('results.db')
 classes = ["S", "W", "A", "B", "C"]
@@ -27,7 +29,7 @@ for c in classes:
 for p in processes:
   print(str('\n'+str(p)), end="\t")
   for c in classes:
-    select_str = 'SELECT ' + func +  '(TIME_IN_SECONDS) FROM bt WHERE PROC_PER_NODE=' + procs + ' AND TOTAL_PROCESSES=' + str(p) + ' AND CLASS="' + c + '" AND VERIFICATION="SUCCESSFUL"'
+    select_str = 'SELECT ' + func +  '(TIME_IN_SECONDS) FROM bt WHERE PROCS_PER_NODE=' + procs + ' AND TOTAL_PROCESSES=' + str(p) + ' AND CLASS="' + c + '" AND VERIFICATION="SUCCESSFUL" AND SMI_SIZE=' + smi
     curs.execute(select_str)
     data = curs.fetchone()
     str_data = str(data[0])
