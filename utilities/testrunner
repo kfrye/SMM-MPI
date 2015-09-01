@@ -7,6 +7,8 @@ import argparse
 import re
 import subprocess
 
+ppn=""
+
 def hfilecheck(s):
     correcthost=r'wyeast[0-9][0-9] slots[=][0-9]'
     if not os.path.isfile(s):
@@ -47,14 +49,31 @@ def smitypecheck(s):
         raise argparse.ArgumentTypeError("smitype "+ s+ " not supported")
     return s
 
+def proccheck(s):
+    _min = ["1", "4" ]
+    _max = ["16", "64" ]
+    available_nodes = 16
+    if s in _min:
+        pass
+    elif s in _max:
+        pass
+    else:
+        raise argparse.ArgumentTypeError("unsupported ppn "+ s)
+    return s
+
+def enumcheck(s):
+    if int(s) <= 0:
+        raise argparse.ArgumentTypeError("Number of experiments must be positive integer "+ s)
+    return s
+
 parser = argparse.ArgumentParser(description="All options except [-ext] are requred: \n"+ "Example: runAllEP -minprocs 4 -maxprocs 64 -hfile /smmProject/hosts4 -type bt -sizefile /smmProject/S -enum 6 -smitype 0 -ext mpi_io_full")
 
-parser.add_argument('-m','--minprocs', dest='minprocs', type=int, help='Minimum number of processes', required=True)
-parser.add_argument('-M','--maxprocs', dest='maxprocs', type=int, help='Maximum Number of Processes', required=True)
+parser.add_argument('-m','--minprocs', dest='minprocs', type=proccheck, help='Minimum number of processes', required=True)
+parser.add_argument('-M','--maxprocs', dest='maxprocs', type=proccheck, help='Maximum Number of Processes', required=True)
 parser.add_argument('-H','--hfile', dest='hostfile', type=hfilecheck, help='HostFile Absolute path', required=True)
 parser.add_argument('-t','--type',  dest='type', type=testtypecheck, help='Testtype', required=True)
 parser.add_argument('-s','--sizefile',  dest='sizefile', type=sfilecheck, help='WorldSize file', required=True)
-parser.add_argument('-e','--enum', dest='enum', type=int, help='number of experiments', required=True)
+parser.add_argument('-e','--enum', dest='enum', type=enumcheck, help='number of experiments', required=True)
 parser.add_argument('-S','--smitype', dest='smitype', type=smitypecheck, help='smytype = 0 [SMI OFF], = 1 [SHORT SMI], = 2 [LONG SMI]', required=True)
 parser.add_argument('-E','--ext', dest='ext', type=extcheck, help='<extension - optional>', required=False, default="")
 

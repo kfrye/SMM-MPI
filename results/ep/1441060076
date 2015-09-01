@@ -55,7 +55,7 @@ Counts:
  Internet: npb@nas.nasa.gov
 
 
-proc per node    =  1
+procs per node    =  1
 smi count        =   0
 smi size         =   1
 smi frequency    =   0

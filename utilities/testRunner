@@ -51,6 +51,7 @@ case $key in
     ;;
     --smitype)
     SMITYPE="$2"
+    echo "Setting smitype $SMITYPE"
     shift # past argument
     ;;
     -h|--help)
@@ -106,6 +107,7 @@ if [ -e $TESTPATH ]; then
     echo ""
     echo "Executable               : $TESTPATH"
     echo "Results will be saved in : $DESTINATIONFILE"
+    echo "SMICOUNT                 : $SMITYPE"
     echo "$ColorOFF"
     echo "$Color1 Warning: SMI RESULTS ARE IGNORED TO CHANGE EDIT /smmProject/utilities/testRunner $Color_OFF"
 
@@ -116,7 +118,7 @@ if [ -e $TESTPATH ]; then
 #    echo "smi frequency    =   0"
 
     mpiBasic $HOSTFILE $NPROC $TESTPATH &> $DESTINATIONFILE
-    echo "proc per node    =  $NPROCSPERNODE" >> $DESTINATIONFILE
+    echo "procs per node    =  $NPROCSPERNODE" >> $DESTINATIONFILE
 
     #This must be change to fetching actual information
     echo "smi count        =   0" >> $DESTINATIONFILE

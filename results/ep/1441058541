@@ -11,7 +11,7 @@ Killed by signal 2.
  Number of random numbers generated:      2147483648
  Number of active processes:                       1
 
-proc per node    =  1
+procs per node    =  1
 smi count        =   0
 smi size         =  1
 smi frequency    =   0

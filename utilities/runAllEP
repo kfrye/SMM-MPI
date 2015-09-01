@@ -138,10 +138,11 @@ while read j; do
             echo "Time Started            : $curTime"
             echo "$ColorOFF"
             echo ""
-            if ! testRunner --testtype $TESTTYPE --hfile $HOSTFILE --worldsize $j --nprocs $x --nprocspernode $MIN --ext $EXT --smitype $SMITYPE ; then
-                echo "SKIPPED"
-                break
-            fi
+            testRunner --testtype $TESTTYPE --hfile $HOSTFILE --worldsize $j --nprocs $x --nprocspernode $MIN --ext "bt" --smitype $SMITYPE
+            #if ! testRunner --testtype $TESTTYPE --hfile $HOSTFILE --worldsize $j --nprocs $x --nprocspernode $MIN --ext $EXT --smitype $SMITYPE ; then
+            #    echo "SKIPPED"
+            #    break
+            #fi
             curTime=`date`
             echo "$Color7"
             echo "Time Ended              : $curTime"
