@@ -1,0 +1,6 @@
+[warn] Epoll ADD(1) on fd 0 failed.  Old events were 0; read change was 1 (add); write change was 0 (none): Operation not permitted
+[warn] Epoll ADD(4) on fd 1 failed.  Old events were 0; read change was 0 (none); write change was 1 (add): Operation not permitted
+proc per node    =  1
+smi count        =   0
+smi size         =   1
+smi frequency    =   0
