@@ -4,36 +4,37 @@ from prettytable import PrettyTable
 import sqlite3
 import json
 
+classes = ["S", "W", "A", "B", "C", "D", "E"]
+tests = ["ep", "bt" ,"ft"]
+ppn = [1,4]
+proc_1 = [1, 2, 4, 8, 16]
+proc_4 = [4, 8, 16, 32, 64]
+
 conn = sqlite3.connect('results.db')
 curs = conn.cursor()
-curs.execute('SELECT MIN(TIME_IN_SECONDS) FROM EP WHERE PROCS_PER_NODE = 1 AND SMI_SIZE = 0 AND CLASS="A" GROUP BY TOTAL_PROCESSES, CLASS ORDER BY TOTAL_PROCESSES')
+res = {}
+for b in tests:
+    res[b]={}
+    for p in ppn:
+        res[b][p]={}
+        for c in classes:
+            curs.execute('SELECT TOTAL_PROCESSES, MIN(TIME_IN_SECONDS) FROM '+ b + ' WHERE PROCS_PER_NODE = '+ str(p) +' AND SMI_SIZE = 0 AND CLASS="'+c+'" AND (TOTAL_PROCESSES=1 OR TOTAL_PROCESSES=2 OR TOTAL_PROCESSES=4 OR TOTAL_PROCESSES=8 OR TOTAL_PROCESSES=16 OR TOTAL_PROCESSES=32 OR TOTAL_PROCESSES=64) GROUP BY TOTAL_PROCESSES, CLASS ORDER BY TOTAL_PROCESSES')
+            col_names = [cn[0] for cn in curs.description]
+            rows = curs.fetchall()
 
-col_names = [cn[0] for cn in curs.description]
-rows = curs.fetchall()
 
-y=PrettyTable()
-y.padding_width = 1
+            data = []
+            for x in rows:
+            #    print x[0]
+                data.append({x[0]:x[1]})
 
-x = 0
-while x < len(col_names):
-    y.add_column(col_names[x],[row[x] for row in rows])
-    # y.align[col_names[x]]="l"
-    # y.align[col_names[2]]="r"
-    x +=1
-
-print(y)
-tabstring = y.get_string()
-
-output=open("export.txt","w")
-output.write("Population Data"+"\n")
-output.write(tabstring)
-output.close()
-
-json_data = json.dumps(rows)
-print json_data
-for x in rows:
-    print x
-print rows
-#floats = [float(x) for x in rows]
-
+            #print data
+            if len(data) > 0:
+                res[b][p][c]=data
+            #json_data = json.dumps(data)
+            #print json_data
 conn.close()
+
+with open('graphReady', 'w') as outfile:
+  json.dump(res, outfile, sort_keys=True, indent=4, separators=(',', ': '))
+
