@@ -1,5 +1,4 @@
 #!/bin/bash
-
 echo 5 >| /proc/smidriver
 echo 3 >| /proc/smidriver
 echo 6 >| /proc/smidriver

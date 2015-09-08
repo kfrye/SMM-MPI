@@ -41,7 +41,7 @@ case $key in
     NPROC="$2"
     shift # past argument
     ;;
-    --nprocspernode)
+    --ppn)
     NPROCSPERNODE="$2"
     shift # past argument
     ;;
@@ -69,9 +69,11 @@ case $key in
 esac
 shift # past argument or value
 done
+DOT='.'
 
+sleep 2s
 if [ $TESTNAME == "bt" ]; then
-    EXT=".mpi_io_full"
+    EXT='.mpi_io_full'
 else
     EXT=""
 fi
@@ -79,11 +81,10 @@ fi
 Color_OFF="[0m"
 Color1="[31m"
 Color5="[35m"
-sleep 2s
 #binary path is hardcoded, sorry
 BINPATH='/smmProject/NPB/NPB3.3-MPI/bin/'
 
-FNAME="$TESTNAME.$WORLDSIZE.$NPROC$EXT"
+FNAME="$TESTNAME$DOT$WORLDSIZE$DOT$NPROC$EXT"
 #RESULTDIR="/smmProject/results/$TESTNAME/$WORLDSIZE/$NPROC"
 #RESULTSLOC="/smmProject/results/$TESTNAME/$WORLDSIZE/$NPROC"
 RESULTDIR="/smmProject/results/$TESTNAME"
@@ -116,6 +117,11 @@ if [ -e $TESTPATH ]; then
 #    echo "smi count        =   0"
 #    echo "smi size         =   0"
 #    echo "smi frequency    =   0"
+    if [ $TESTNAME == "bt" ]; then
+        echo "Clearing IO cache"
+        emptyBtIOcache
+        echo "Done clearing IO cache"
+    fi
 
     mpiBasic $HOSTFILE $NPROC $TESTPATH &> $DESTINATIONFILE
     echo "procs per node    =  $NPROCSPERNODE" >> $DESTINATIONFILE

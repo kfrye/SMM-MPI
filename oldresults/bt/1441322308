@@ -1,0 +1,48 @@
+[warn] Epoll ADD(4) on fd 1 failed.  Old events were 0; read change was 0 (none); write change was 1 (add): Operation not permitted
+Killed by signal 2.
+Killed by signal 2.
+Killed by signal 2.
+Killed by signal 2.
+Killed by signal 2.
+
+
+ NAS Parallel Benchmarks 3.3 -- BT Benchmark 
+
+ No input file inputbt.data. Using compiled defaults
+ Size:  102x 102x 102
+ Iterations:  200    dt:   0.0003000
+ Number of active processes:     4
+
+ BTIO -- FULL MPI-IO write interval:   5
+
+ Time step    1
+ Writing data set, time step           5
+ Writing data set, time step          10
+ Writing data set, time step          15
+ Time step   20
+ Writing data set, time step          20
+ Writing data set, time step          25
+ Writing data set, time step          30
+ Writing data set, time step          35
+ Time step   40
+ Writing data set, time step          40
+ Writing data set, time step          45
+ Writing data set, time step          50
+ Writing data set, time step          55
+ Time step   60
+ Writing data set, time step          60
+ Writing data set, time step          65
+ Writing data set, time step          70
+ Writing data set, time step          75
+ Time step   80
+ Writing data set, time step          80
+ Writing data set, time step          85
+ Writing data set, time step          90
+ Writing data set, time step          95
+ Time step  100
+ Writing data set, time step         100
+ Writing data set, time step         105
+procs per node    =  4
+smi count        =   0
+smi size         =   1
+smi frequency    =   0

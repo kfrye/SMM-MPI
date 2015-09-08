@@ -29,24 +29,31 @@ esac
 shift # past argument or value
 done
 
+if hostname | grep wyeasthead ; then
+    sshrun -t ssh -c "compileAllTests -n $MAX" &>/dev/null &
+fi
 
 MIN=1
 x=1
 
 cd /smmProject/NPB/NPB3.3-MPI  
+make clean
+cd bin
+rm *
+hostname >| compiledby
+date >> compiledby
+cd ..
 for i in ep bt ft; do
     for j in S W A B C D; do
         while [ $x -le $MAX ]; do
             echo $i $j $x
-            echo "make $i NPROCS=$x CLASS=$j"
-            make $i NPROCS=$x CLASS=$j
+            echo "making $i NPROCS=$x CLASS=$j"
             if [ $i == "bt" ]; then
                 make $i NPROCS=$x CLASS=$j SUBTYPE=full
-                x=$(($x+1))
             else
                 make $i NPROCS=$x CLASS=$j
-                x=$(($x*2))
             fi
+            x=$(($x*2))
         done
         x=$MIN
     done

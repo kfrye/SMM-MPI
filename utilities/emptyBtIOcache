@@ -1,0 +1,3 @@
+#!/bin/bash
+
+sshrun -t "ssh" -c 'cp /dev/null /smmProject/NPB/NPB3.3-MPI/btio.full.out'

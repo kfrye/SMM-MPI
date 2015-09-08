@@ -1,0 +1,56 @@
+[warn] Epoll ADD(4) on fd 1 failed.  Old events were 0; read change was 0 (none); write change was 1 (add): Operation not permitted
+
+
+ NAS Parallel Benchmarks 3.3 -- FT Benchmark
+
+ No input file inputft.data. Using compiled defaults
+ Size                :   64x  64x  64
+ Iterations          :              6
+ Number of processes :              1
+ Processor array     :         1x   1
+ Layout type         :             0D
+ Initialization time =   3.9808988571166992E-002
+ T =    1     Checksum =    5.546087004964D+02    4.845363331978D+02
+ T =    2     Checksum =    5.546385409190D+02    4.865304269511D+02
+ T =    3     Checksum =    5.546148406171D+02    4.883910722337D+02
+ T =    4     Checksum =    5.545423607415D+02    4.901273169046D+02
+ T =    5     Checksum =    5.544255039624D+02    4.917475857993D+02
+ T =    6     Checksum =    5.542683411903D+02    4.932597244941D+02
+ Result verification successful
+ class = S
+
+
+ FT Benchmark Completed.
+ Class           =                        S
+ Size            =             64x  64x  64
+ Iterations      =                        6
+ Time in seconds =                     0.28
+ Total processes =                        1
+ Compiled procs  =                        1
+ Mop/s total     =                   623.32
+ Mop/s/process   =                   623.32
+ Operation type  =           floating point
+ Verification    =               SUCCESSFUL
+ Version         =                    3.3.1
+ Compile date    =              01 Sep 2015
+
+ Compile options:
+    MPIF77       = mpif77
+    FLINK        = $(MPIF77)
+    FMPI_LIB     = -L/usr/lib64/openmpi/lib/ -lmpi
+    FMPI_INC     = -I/usr/include/openmpi-x86_64/
+    FFLAGS       = -O
+    FLINKFLAGS   = -O
+    RAND         = randi8
+
+
+ Please send feedbacks and/or the results of this run to:
+
+ NPB Development Team 
+ Internet: npb@nas.nasa.gov
+
+
+procs per node    =  1
+smi count        =   0
+smi size         =   2
+smi frequency    =   0

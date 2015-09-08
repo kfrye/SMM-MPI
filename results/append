@@ -1,7 +1,0 @@
-#!/bin/bash
-
-cd ep
-for i in *
-do 
-   echo "START_TIME    =   $i" >> $i
-done

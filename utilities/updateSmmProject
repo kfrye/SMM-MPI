@@ -2,11 +2,14 @@
 
 resetGroup
 cd /smmProject
-for i in wyeast{01..17}; do
-
-    echo "Updating $i"
-    sudo rsync -rva --exclude results --exclude /smmProject/NPB/NPB3.3-MPI/bin . $i:/smmProject &
-    echo ""
-    echo ""
-
-done
+if hostname | grep wyeast01 ; then 
+    for i in wyeast{01..17}; do
+        echo "Updating $i"
+        rsync -rva  -e "ssh -o StrictHostKeyChecking=no" . $i:/smmProject &
+        echo ""
+        echo ""
+    done
+elif hostname | grep wyeasthead ;then
+    sudo rsync -rva --exclude results --exclude NPB/NPB3.3-MPI/bin  -e "ssh -o StrictHostKeyChecking=no" . wyeast01:/smmProject
+    ssh wyeast01 updateSmmProject
+fi

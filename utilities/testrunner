@@ -6,6 +6,10 @@ import os
 import argparse
 import re
 import subprocess
+import signal
+import sys
+import datetime
+import smtplib
 
 ppn=""
 
@@ -19,14 +23,11 @@ def hfilecheck(s):
                  raise argparse.ArgumentTypeError("invalid host type " + line.strip())
     return s
 
-def sfilecheck(s):
+def worldsizecheck(s):
     allowedsizes = [ "S" ,"W", "A", "B", "C", "D" ]
-    if not os.path.isfile(s):
-        raise argparse.ArgumentTypeError(s+ " not found")
-    with open(s, "r") as sizefile:
-        for line in sizefile:
-            if line.strip() not in allowedsizes:
-                 raise argparse.ArgumentTypeError("invalid size " + line.strip())
+    for si in s:
+        if si not in allowedsizes:
+             raise argparse.ArgumentTypeError("invalid size " + si)
                 
     return s
 
@@ -59,40 +60,138 @@ def proccheck(s):
         pass
     else:
         raise argparse.ArgumentTypeError("unsupported ppn "+ s)
-    return s
+    return int(s)
 
 def enumcheck(s):
     if int(s) <= 0:
         raise argparse.ArgumentTypeError("Number of experiments must be positive integer "+ s)
-    return s
+    return int(s)
 
 parser = argparse.ArgumentParser(description="All options except [-ext] are requred: \n"+ "Example: runAllEP -minprocs 4 -maxprocs 64 -hfile /smmProject/hosts4 -type bt -sizefile /smmProject/S -enum 6 -smitype 0 -ext mpi_io_full")
 
-parser.add_argument('-m','--minprocs', dest='minprocs', type=proccheck, help='Minimum number of processes', required=True)
-parser.add_argument('-M','--maxprocs', dest='maxprocs', type=proccheck, help='Maximum Number of Processes', required=True)
+parser.add_argument('-p','--ppn', dest='ppn', type=proccheck, help='Procs per node, can be 1 or 4', required=True)
+parser.add_argument('-n','--nodes', nargs='*' , dest="nodes", help='List of nodes', required=True)
 parser.add_argument('-H','--hfile', dest='hostfile', type=hfilecheck, help='HostFile Absolute path', required=True)
 parser.add_argument('-t','--type',  dest='type', type=testtypecheck, help='Testtype', required=True)
-parser.add_argument('-s','--sizefile',  dest='sizefile', type=sfilecheck, help='WorldSize file', required=True)
+parser.add_argument('-w','--worldsize', nargs='*' ,dest='worldsize', type=worldsizecheck, help='WorldSize file', required=True)
 parser.add_argument('-e','--enum', dest='enum', type=enumcheck, help='number of experiments', required=True)
-parser.add_argument('-S','--smitype', dest='smitype', type=smitypecheck, help='smytype = 0 [SMI OFF], = 1 [SHORT SMI], = 2 [LONG SMI]', required=True)
+parser.add_argument('-s','--smitype', dest='smitype', type=smitypecheck, help='smytype = 0 [SMI OFF], = 1 [SHORT SMI], = 2 [LONG SMI]', required=True)
+parser.add_argument('-l','--loc', dest='loc', type=str, help='bin directory parent', required=False, default="/smmProject/NPB/NPB3.3-MPI/")
 parser.add_argument('-E','--ext', dest='ext', type=extcheck, help='<extension - optional>', required=False, default="")
+
 
 
 args = parser.parse_args()
 
-print args
+
+class benchmarkRunner:
+    expNumCurr=0
+    def __init__(self, args):
+        self.opts={}
+        self.opts["worldsize"] = args.worldsize
+        self.opts["nodes"] = args.nodes
+        self.opts["ext"] = args.ext
+        self.opts["testtype"] = args.type
+        self.opts["hfile"] = args.hostfile
+        self.opts["ppn"] = args.ppn
+        self.opts["maxTrials"] = args.enum
+        self.opts["smitype"] = args.smitype
+
+    def printInfo(self):
+        pass
+        
+    def generateCommand(self):
+        mainRunner = "testRunner"
+        mainRunner = self.addOption(mainRunner , "testtype"      )
+        mainRunner = self.addOption(mainRunner , "hfile"         )
+        mainRunner = self.addOption(mainRunner , "worldsize"     )
+        mainRunner = self.addOption(mainRunner , "nprocs"        )
+        mainRunner = self.addOption(mainRunner , "ppn" )
+        mainRunner = self.addOption(mainRunner , "ext"           )
+        mainRunner = self.addOption(mainRunner , "smitype"       )
+
+        print mainRunner
+
+        return mainRunner
+
+    def addOption(self, command, option):
+        if option == "nprocs":
+            command+=" --"+option+" "+ str(self.n)
+        elif option == "worldsize":
+            command+=" --"+option+" "+ self.wsize
+        else:
+            command+=" --"+option+" "+ str(self.opts[option])
+        return command
+
+
+    def prepare(self):
+        if self.opts["testtype"] == "bt":
+            os.system("emptyIO")
+
+    def notify(sefl):
+        SERVER = "localhost"
+
+        FROM = "testrunner@wyeasthead.com"
+        TO = ["konstan2@pdx.edu"] # must be a list
+        
+        SUBJECT = "Hello!"
+        
+        TEXT = "This message was sent with Python's smtplib."
+        
+        # Prepare actual message
+        
+        message = """\
+        From: %s
+        To: %s
+        Subject: %s
+        
+        %s
+        """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
+        
+        # Send the mail
+        
+        server = smtplib.SMTP(SERVER)
+        server.sendmail(FROM, TO, message)
+        server.quit()
+
+    def run(self):
+        #self.prepare()
+        for wsize in self.opts["worldsize"]:
+            self.wsize = wsize
+            for nodes in self.opts["nodes"]:
+                for self.trial in range(1, self.opts["maxTrials"] + 1):
+                    self.n = int(nodes) * self.opts["ppn"]
+                    
+                    command = self.generateCommand()
+                    exit_status = os.system(command)
+    
+                    if exit_status == 111:
+                        print "Skipped"
+                        break
+                    print exit_status
+                    print wsize + " "+str(self.n)+" "+str(self.trial)
+        
+        
+            
+        
+
+def signal_handler(signal, frame):
+        print('You pressed Ctrl+C!')
+        sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+
+os.chdir(args.loc)
+
 
 
 resultDict = {}
- 
-os.system("/smmProject/utilities/runAllEP --minprocs "+ str(args.minprocs) + " --maxprocs " + str(args.maxprocs) + " --hfile " + args.hostfile + " --type "+ args.type+" --sizefile "+args.sizefile+" --enum "+str(args.enum)+" --smitype "+str(args.smitype)+" --ext "+args.ext)
+print datetime.datetime.now()
+
+runner = benchmarkRunner(args)
+
+runner.run()
 
 
-#outfile = 'data.txt'
-#try:
-#    os.remove(outfile)
-#except OSError:
-#    pass
-#
-#with open(outfile, 'w') as outfile:
-#    json.dump(resultDict, outfile, sort_keys=True, indent=4, separators=(',', ': '))
+sys.exit(0)
+

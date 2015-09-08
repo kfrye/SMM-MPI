@@ -42,10 +42,10 @@ shift # past argument or value
 done
 
 for node in wyeast{01..17}; do
-if [ "$VERBOSE" =  true ]; then
-echo ""
-echo "******************************************************"
-echo $node
-fi
+    if [ "$VERBOSE" ==  true ]; then
+        echo ""
+        echo "******************************************************"
+        echo $node
+    fi
     $TYPE $node $COMMAND
 done
