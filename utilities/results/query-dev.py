@@ -13,7 +13,7 @@ procs = sys.argv[2]
 smi = sys.argv[3]
 
 conn = sqlite3.connect('results.db')
-classes = ["S", "W", "A", "B", "C", "D", "E"]
+classes = ["S", "W", "A", "B", "C"]
 proc_1 = [1, 2, 4, 8, 16]
 proc_4 = [4, 8, 16, 32, 64]
 if procs == "1":

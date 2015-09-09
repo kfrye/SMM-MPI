@@ -13,10 +13,19 @@ procs = sys.argv[2]
 func = sys.argv[3]
 smi = sys.argv[4]
 
+if test not in ["ep", "bt", "ft"]:
+  print("The test type must be 'ep', 'bt', or 'ft'")
+  exit(1)
+
 conn = sqlite3.connect('results.db')
-classes = ["S", "W", "A", "B", "C", "D", "E"]
-proc_1 = [1, 2, 4, 8, 16]
-proc_4 = [4, 8, 16, 32, 64]
+classes = ["S", "W", "A", "B", "C"]
+
+if test == "ep" or test == "ft":
+  proc_1 = [1, 2, 4, 8, 16]
+  proc_4 = [4, 8, 16, 32, 64]
+else:
+  proc_1 = [1, 4, 16]
+  proc_4 = [4, 16, 64]
 if procs == "1":
   processes = proc_1
 else:
