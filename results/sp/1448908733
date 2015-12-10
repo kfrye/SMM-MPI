@@ -1,0 +1,68 @@
+[warn] Epoll ADD(4) on fd 1 failed.  Old events were 0; read change was 0 (none); write change was 1 (add): Operation not permitted
+
+
+ NAS Parallel Benchmarks 3.3 -- SP Benchmark
+
+ No input file inputsp.data. Using compiled defaults
+ Size:   12x  12x  12
+ Iterations:  100    dt:   0.0150000
+ Number of active processes:     1
+
+ Time step    1
+ Time step   20
+ Time step   40
+ Time step   60
+ Time step   80
+ Time step  100
+ Verification being performed for class S
+ accuracy setting for epsilon =  0.1000000000000E-07
+ Comparison of RMS-norms of residual
+           1 0.2747031545139E-01 0.2747031545134E-01 0.1823617374471E-11
+           2 0.1036074670529E-01 0.1036074670529E-01 0.9895247934005E-13
+           3 0.1623574506508E-01 0.1623574506510E-01 0.1188981642867E-11
+           4 0.1584055722446E-01 0.1584055722446E-01 0.2190230370556E-14
+           5 0.3484904060942E-01 0.3484904060936E-01 0.1611420784687E-11
+ Comparison of RMS-norms of solution error
+           1 0.2728925855743E-04 0.2728925855738E-04 0.1779283103875E-11
+           2 0.1036444664084E-04 0.1036444664084E-04 0.1487392445950E-12
+           3 0.1615479828714E-04 0.1615479828717E-04 0.1712018887646E-11
+           4 0.1575070499448E-04 0.1575070499448E-04 0.4087087150314E-14
+           5 0.3417766618345E-04 0.3417766618339E-04 0.1738791386764E-11
+ Verification Successful
+
+
+ SP Benchmark Completed.
+ Class           =                        S
+ Size            =             12x  12x  12
+ Iterations      =                      100
+ Time in seconds =                     0.08
+ Total processes =                        1
+ Compiled procs  =                        1
+ Mop/s total     =                  1192.11
+ Mop/s/process   =                  1192.11
+ Operation type  =           floating point
+ Verification    =               SUCCESSFUL
+ Version         =                    3.3.1
+ Compile date    =              24 Sep 2015
+
+ Compile options:
+    MPIF77       = mpif77
+    FLINK        = $(MPIF77)
+    FMPI_LIB     = -L/usr/lib64/openmpi/lib/ -lmpi
+    FMPI_INC     = -I/usr/include/openmpi-x86_64/
+    FFLAGS       = -O
+    FLINKFLAGS   = -O
+    RAND         = (none)
+
+
+ Please send feedbacks and/or the results of this run to:
+
+ NPB Development Team 
+ Internet: npb@nas.nasa.gov
+
+
+procs per node    =  1
+smi count        =   0
+smi size         =   2
+smi frequency    =   0
+ht               =   1

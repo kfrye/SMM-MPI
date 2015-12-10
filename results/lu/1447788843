@@ -1,0 +1,78 @@
+[warn] Epoll ADD(4) on fd 1 failed.  Old events were 0; read change was 0 (none); write change was 1 (add): Operation not permitted
+
+
+ NAS Parallel Benchmarks 3.3 -- LU Benchmark
+
+ Size:  102x 102x 102
+ Iterations:  250
+ Number of processes:    16
+
+ Time step    1
+ Time step   20
+ Time step   40
+ Time step   60
+ Time step   80
+ Time step  100
+ Time step  120
+ Time step  140
+ Time step  160
+ Time step  180
+ Time step  200
+ Time step  220
+ Time step  240
+ Time step  250
+
+ Verification being performed for class B
+ Accuracy setting for epsilon =  0.1000000000000E-07
+ Comparison of RMS-norms of residual
+           1   0.3553267296998E+04 0.3553267296998E+04 0.1023840455280E-14
+           2   0.2621475079531E+03 0.2621475079531E+03 0.6071450919104E-14
+           3   0.8833372185095E+03 0.8833372185095E+03 0.1801821201181E-14
+           4   0.7781277473943E+03 0.7781277473943E+03 0.8766183041460E-15
+           5   0.7308796959255E+04 0.7308796959255E+04 0.5101972729653E-14
+ Comparison of RMS-norms of solution error
+           1   0.1140117638021E+03 0.1140117638021E+03 0.1246437581640E-14
+           2   0.8109896365542E+01 0.8109896365542E+01 0.6790106746047E-14
+           3   0.2848059731770E+02 0.2848059731770E+02 0.3368021683590E-14
+           4   0.2590539456783E+02 0.2590539456783E+02 0.2194269564664E-14
+           5   0.2605490750486E+03 0.2605490750486E+03 0.2181678014025E-14
+ Comparison of surface integral
+               0.4788716270331E+02 0.4788716270331E+02 0.1038649790370E-14
+ Verification Successful
+
+
+ LU Benchmark Completed.
+ Class           =                        B
+ Size            =            102x 102x 102
+ Iterations      =                      250
+ Time in seconds =                    45.37
+ Total processes =                       16
+ Compiled procs  =                       16
+ Mop/s total     =                 10993.95
+ Mop/s/process   =                   687.12
+ Operation type  =           floating point
+ Verification    =               SUCCESSFUL
+ Version         =                    3.3.1
+ Compile date    =              24 Sep 2015
+
+ Compile options:
+    MPIF77       = mpif77
+    FLINK        = $(MPIF77)
+    FMPI_LIB     = -L/usr/lib64/openmpi/lib/ -lmpi
+    FMPI_INC     = -I/usr/include/openmpi-x86_64/
+    FFLAGS       = -O
+    FLINKFLAGS   = -O
+    RAND         = (none)
+
+
+ Please send feedbacks and/or the results of this run to:
+
+ NPB Development Team 
+ Internet: npb@nas.nasa.gov
+
+
+procs per node    =  1
+smi count        =   0
+smi size         =   1
+smi frequency    =   0
+ht               =   1

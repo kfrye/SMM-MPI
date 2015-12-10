@@ -158,3 +158,4 @@ procs per node    =  1
 smi count        =   0
 smi size         =   1
 smi frequency    =   0
+ht = 0
