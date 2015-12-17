@@ -1,0 +1,161 @@
+[warn] Epoll ADD(4) on fd 1 failed.  Old events were 0; read change was 0 (none); write change was 1 (add): Operation not permitted
+
+
+ NAS Parallel Benchmarks 3.3 -- BT Benchmark 
+
+ No input file inputbt.data. Using compiled defaults
+ Size:  162x 162x 162
+ Iterations:  200    dt:   0.0001000
+ Number of active processes:    16
+
+ BTIO -- FULL MPI-IO write interval:   5
+
+ Time step    1
+ Writing data set, time step           5
+ Writing data set, time step          10
+ Writing data set, time step          15
+ Time step   20
+ Writing data set, time step          20
+ Writing data set, time step          25
+ Writing data set, time step          30
+ Writing data set, time step          35
+ Time step   40
+ Writing data set, time step          40
+ Writing data set, time step          45
+ Writing data set, time step          50
+ Writing data set, time step          55
+ Time step   60
+ Writing data set, time step          60
+ Writing data set, time step          65
+ Writing data set, time step          70
+ Writing data set, time step          75
+ Time step   80
+ Writing data set, time step          80
+ Writing data set, time step          85
+ Writing data set, time step          90
+ Writing data set, time step          95
+ Time step  100
+ Writing data set, time step         100
+ Writing data set, time step         105
+ Writing data set, time step         110
+ Writing data set, time step         115
+ Time step  120
+ Writing data set, time step         120
+ Writing data set, time step         125
+ Writing data set, time step         130
+ Writing data set, time step         135
+ Time step  140
+ Writing data set, time step         140
+ Writing data set, time step         145
+ Writing data set, time step         150
+ Writing data set, time step         155
+ Time step  160
+ Writing data set, time step         160
+ Writing data set, time step         165
+ Writing data set, time step         170
+ Writing data set, time step         175
+ Time step  180
+ Writing data set, time step         180
+ Writing data set, time step         185
+ Writing data set, time step         190
+ Writing data set, time step         195
+ Time step  200
+ Writing data set, time step         200
+ Reading data set            1
+ Reading data set            2
+ Reading data set            3
+ Reading data set            4
+ Reading data set            5
+ Reading data set            6
+ Reading data set            7
+ Reading data set            8
+ Reading data set            9
+ Reading data set           10
+ Reading data set           11
+ Reading data set           12
+ Reading data set           13
+ Reading data set           14
+ Reading data set           15
+ Reading data set           16
+ Reading data set           17
+ Reading data set           18
+ Reading data set           19
+ Reading data set           20
+ Reading data set           21
+ Reading data set           22
+ Reading data set           23
+ Reading data set           24
+ Reading data set           25
+ Reading data set           26
+ Reading data set           27
+ Reading data set           28
+ Reading data set           29
+ Reading data set           30
+ Reading data set           31
+ Reading data set           32
+ Reading data set           33
+ Reading data set           34
+ Reading data set           35
+ Reading data set           36
+ Reading data set           37
+ Reading data set           38
+ Reading data set           39
+ Reading data set           40
+ Verification being performed for class C
+ accuracy setting for epsilon =  0.1000000000000E-07
+ Comparison of RMS-norms of residual
+           1 0.6239811655176E+04 0.6239811655176E+04 0.2915135109947E-15
+           2 0.5079323919042E+03 0.5079323919042E+03 0.4476455509971E-15
+           3 0.1542353009301E+04 0.1542353009301E+04 0.2063879952909E-14
+           4 0.1330238792929E+04 0.1330238792929E+04 0.1709269618747E-15
+           5 0.1160408742844E+05 0.1160408742844E+05 0.2194558754119E-14
+ Comparison of RMS-norms of solution error
+           1 0.2597156483475E+03 0.2597156483475E+03 0.4924527776843E-13
+           2 0.1985384289495E+02 0.1985384289495E+02 0.9287161226437E-13
+           3 0.6517950485788E+02 0.6517950485788E+02 0.6453582310684E-13
+           4 0.5757235541520E+02 0.5757235541520E+02 0.4640492241790E-13
+           5 0.5215668188726E+03 0.5215668188726E+03 0.2179717604877E-13
+ Verification Successful
+
+ BTIO -- statistics:
+   I/O timing in seconds   :          62.99
+   I/O timing percentage   :          18.64
+   Total data written (MB) :        6802.44
+   I/O data rate  (MB/sec) :         107.99
+
+
+ BT Benchmark Completed.
+ Class           =                        C
+ Size            =            162x 162x 162
+ Iterations      =                      200
+ Time in seconds =                   338.01
+ Total processes =                       16
+ Compiled procs  =                       16
+ Mop/s total     =                  8479.76
+ Mop/s/process   =                   529.99
+ Operation type  =           floating point
+ Verification    =               SUCCESSFUL
+ Version         =                    3.3.1
+ Compile date    =              24 Sep 2015
+
+ Compile options:
+    MPIF77       = mpif77
+    FLINK        = $(MPIF77)
+    FMPI_LIB     = -L/usr/lib64/openmpi/lib/ -lmpi
+    FMPI_INC     = -I/usr/include/openmpi-x86_64/
+    FFLAGS       = -O
+    FLINKFLAGS   = -O
+    RAND         = (none)
+
+
+ Please send feedbacks and/or the results of this run to:
+
+ NPB Development Team 
+ Internet: npb@nas.nasa.gov
+
+
+procs per node    =  1
+smi count        =   0
+smi size         =   1
+smi frequency    =   0
+ht               =   1
