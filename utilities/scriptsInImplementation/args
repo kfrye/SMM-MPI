@@ -1,0 +1,10 @@
+#!/bin/bash
+
+sizes=$1
+
+arr=$(echo $sizes | tr " " "\n")
+
+for x in $arr
+do
+    echo $x
+done

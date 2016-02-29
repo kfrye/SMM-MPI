@@ -1,0 +1,5 @@
+#!/bin/bash
+
+benchmarksRunner  --minprocs 1 --hfile /smmProject/hosts1 --type bt --worldsizes "S W A B C" --maxnodes 1 --enum 6 --smitype 0
+benchmarksRunner  --minprocs 1 --hfile /smmProject/hosts1 --type bt --worldsizes "S W A B C" --maxnodes 1 --enum 6 --smitype 1
+benchmarksRunner  --minprocs 1 --hfile /smmProject/hosts1 --type bt --worldsizes "S W A B C" --maxnodes 1 --enum 6 --smitype 2

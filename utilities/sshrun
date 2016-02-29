@@ -35,6 +35,7 @@ case $key in
     *)
     echo "Unknown argument encountered : $key . Exit"
     myhelp
+    exit
             # unknown option
     ;;
 esac

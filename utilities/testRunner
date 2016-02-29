@@ -1,6 +1,11 @@
 #!/bin/bash
 
+Color_OFF="[0m"
+Color1="[31m"
+Color5="[35m"
+
 EXT=""
+DOT='.'
 
 myhelp() {
     echo "testRunner ERROR: expected 5 arguments, got $#" 
@@ -51,7 +56,6 @@ case $key in
     ;;
     --smitype)
     SMITYPE="$2"
-    echo "Setting smitype $SMITYPE"
     shift # past argument
     ;;
     -h|--help)
@@ -69,26 +73,22 @@ case $key in
 esac
 shift # past argument or value
 done
-DOT='.'
 
 sleep 2s
-if [ $TESTNAME == "bt" ]; then
-    EXT='.mpi_io_full'
-else
+#if [ $TESTNAME == "bt" ]; then
+if [ "$EXT" == "$DOT" ]; then
     EXT=""
+else
+    EXT=$EXT
 fi
 
-Color_OFF="[0m"
-Color1="[31m"
-Color5="[35m"
 #binary path is hardcoded, sorry
 BINPATH='/smmProject/NPB/NPB3.3-MPI/bin/'
 
 FNAME="$TESTNAME$DOT$WORLDSIZE$DOT$NPROC$EXT"
+RDIR="$TESTNAME$EXT"
 #RESULTDIR="/smmProject/results/$TESTNAME/$WORLDSIZE/$NPROC"
-#RESULTSLOC="/smmProject/results/$TESTNAME/$WORLDSIZE/$NPROC"
-RESULTDIR="/smmProject/results/$TESTNAME"
-RESULTSLOC="/smmProject/results/$TESTNAME"
+RESULTDIR="/smmProject/results/$RDIR"
 echo "ResultDir $RESULTDIR"
 echo `test -d $RESULTDIR`
 
@@ -110,7 +110,7 @@ if [ -e $TESTPATH ]; then
     echo "Results will be saved in : $DESTINATIONFILE"
     echo "SMICOUNT                 : $SMITYPE"
     echo "$ColorOFF"
-    echo "$Color1 Warning: SMI RESULTS ARE IGNORED TO CHANGE EDIT /smmProject/utilities/testRunner $Color_OFF"
+#    echo "$Color1 Warning: SMI RESULTS ARE IGNORED TO CHANGE EDIT /smmProject/utilities/testRunner $Color_OFF"
 
 #    mpiBasic $HOSTFILE $NPROC $TESTPATH 
 #    echo "proc per node    =  $NPROCSPERNODE"
@@ -126,16 +126,23 @@ if [ -e $TESTPATH ]; then
     mpiBasic $HOSTFILE $NPROC $TESTPATH &> $DESTINATIONFILE
     echo "procs per node    =  $NPROCSPERNODE" >> $DESTINATIONFILE
 
-    #This must be change to fetching actual information
     echo "smi count        =   0" >> $DESTINATIONFILE
     echo "smi size         =   $SMITYPE" >> $DESTINATIONFILE
     echo "smi frequency    =   0" >> $DESTINATIONFILE
-    
+    echo "ht               =   $HT" >> $DESTINATIONFILE    
     echo "$Color5"
     echo "CURRENT TEST COMPLETED"
     echo ""
     echo "$ColorOFF"
 else
     echo "ERROR file $TESTPATH doesnt exits"
+
+#    if [ `ls -A $RESULTDIR` ]; then
+#         echo ""
+#    else
+#         rm -rf $RESULTDIR
+#    fi
+
     exit 111
 fi
+

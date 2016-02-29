@@ -1,0 +1,200 @@
+#!/bin/bash
+
+Color_OFF="[0m"
+Color1="[31m"
+Color7="[37m"
+
+myhelp() {
+    echo "All options except [-ext] are requred: "
+    echo "    --minprocs      Minimum number of processes"
+    echo "    --maxnodes      Maximum Number of Nodes"
+    echo "    --hfile         HostFile Absolute path"
+    echo "    --type          Testype"
+    echo "    --worldsizes    Worldsizes e.g. \"S W A B C\", must be in quotes!"
+    echo "    --enum          number of experiments"
+    echo "    --smitype       smytype = 0 [SMI OFF], = 1 [SHORT SMI], = 2 [LONG SMI]"
+    echo "    --mock          "
+    echo ""
+    echo "    -ext           <extension - optional>"
+    echo "Example: benchmarksRunner --minprocs 4 --maxnodes 16 --hfile /smmProject/hosts4 --type bt --worldsizes "S W A B C" --enum 6 --smitype 0 --ext mpi_io_full"
+    exit 1
+}
+
+if [[ "$#" -le 1 ]]; then
+    myhelp
+fi
+SCRIPT=$@
+MOCK=false
+
+if echo $SCRIPT | grep "mock" ;then 
+    MOCK=true
+fi
+#PARSING ARGUMENTS HERE
+while [[ $# > 1 ]]
+do
+key="$1"
+
+
+case $key in
+    #minimum number of process, is also used as PPN (process per node)
+    --minprocs)
+    MINPROCS="$2"
+    shift # past argument
+    ;;
+    #minimum number of nodesa
+    --minnodes)
+    MINNODES="$2"
+    shift # past argument
+    ;;
+    
+    #maximum number of nodes, maxnodes hard limit = 17
+    --maxnodes)
+    MAXNODES="$2"
+    shift # past argument
+    ;;
+    --hfile)
+    HFILE="$2"
+    shift # past argument
+    ;;
+    --type)
+    TTYPE="$2"
+    shift # past argument
+    ;;
+    --worldsizes)
+    WSIZES="$2"
+    shift # past argument
+    ;;
+    --enum)
+    EXPERIMENTS="$2"
+    shift # past argument
+    ;;
+    --ext)
+    EXTENSION="$2"
+    shift # past argument
+    ;;
+    --mock)
+    echo "Mocking"
+    MOCK=true
+    ;;
+    --smitype)
+    SMITYPE="$2"
+    shift # past argument
+    ;;
+    -h|--help)
+    echo "HELP"
+    myhelp
+    ;;
+    --default)
+    DEFAULT=YES
+    ;;
+    *)
+    echo "Unknown argument encountered : $key . Exit"
+    myhelp
+            # unknown option
+    ;;
+esac
+shift # past argument or value
+done
+
+
+if [ -z "$EXTENSION" ]; then
+    EXT=""
+else
+    EXT="--ext $EXTENSION"
+fi
+
+MAXPROCS=$(($MAXNODES * $MINPROCS))
+MAXRUN=$EXPERIMENTS
+MIN=$MINPROCS
+MAX=$MAXPROCS
+HOSTFILE="--hfile $HFILE"
+TESTTYPE="--testtype $TTYPE"
+SIZES=$(echo $WSIZES | tr " " "\n")
+x=$MIN
+r=1
+
+if [ -z "$MAXRUN"  ] || [ -z "$MIN" ] || [ -z "$MAX" ] || [ -z "$HOSTFILE" ] || [ -z "$TESTTYPE" ] || [ -z "SIZES" ] || [ -z "$x" ] || [ -z "$r" ]; then
+    echo "Error: one or more required arguments is missing"
+    exit 1
+fi
+
+
+if ! $MOCK; then
+    echo "$Color1 WARNING: THIS SCRIPT PERFORMS VERY MINIMUM INPUT VALIDATION, USE CAREFULLY!!! $Color_OFF"
+    sleep 5s
+    if ! prep $SMITYPE ; then
+        echo "ERROR: couldn't process SMI control command"
+        exit
+    fi
+fi
+
+ 
+cd /smmProject/NPB/NPB3.3-MPI/
+STARTTIME=`date +%s`
+#cat $SIZES
+#exit 111
+for j in $SIZES ; do
+#while read j; do
+    while [ $x -le $MAX ]; do
+        while [ $r -le $MAXRUN ]; do
+            echo ""
+            echo ""
+            echo "$Color7"
+            echo "Current Test Parameters"
+            echo "World size              : $j"
+            echo "Number of processes     : $x"
+            echo "Extension               : $EXT"
+            echo "Test type               : $TESTTYPE"
+            echo "Hostfile                : $HOSTFILE"
+            echo "Minimum number of cores : $MIN"
+            echo "EXPERIMENT NUMBER       : $r"
+            echo "EXPERIMENTS MAXIMUM     : $MAXRUN"
+            echo "SMITYPE                 : $SMITYPE"
+            echo "Mock?                   : $MOCK"
+            curTime=`date`
+            curTimeEpoch=`date +%s`
+            echo "Time Started            : $curTime"
+            echo "$ColorOFF"
+            echo ""
+            WSIZE="--worldsize $j"
+            NPROCS="--nprocs $x"
+            PPN="--ppn $MIN"
+            SMI="--smitype $SMITYPE"
+            if ! $MOCK; then
+                if ! testRunner $TESTTYPE $HOSTFILE $WSIZE  $NPROCS  $PPN $EXT $SMI
+                then 
+                    echo "SKIPPED"
+                    break
+                fi
+            else 
+                echo "MOCK"
+                echo "testRunner $TESTTYPE $HOSTFILE $WSIZE  $NPROCS  $PPN $EXT $SMI"
+            fi
+            curTime=`date`
+            curEndTimeEpoch=`date +%s`
+            curEndTime=$((($curEndTimeEpoch-$curTimeEpoch)/60))
+            echo "$Color7"
+            echo "Time Ended              : $curTime"
+            echo "Run time (s)            : $curEndTime"
+            echo "**********************************"
+            echo "$ColorOFF"
+            echo ""
+            r=$(($r+1))
+        done
+        r=1
+        x=$(($x*2))
+    done
+    x=$MIN
+done
+
+ENDTIME=`date +%s`
+TOTALTIME=$((($ENDTIME-$STARTTIME)/60))
+
+if ! $MOCK; then
+    prep 0
+
+    receiver="konstan2@pdx.edu"
+    subj="Autogenerated email: Script complete"
+    message="Script $SCRIPT completed Total runtime: $TOTALTIME min."
+    ssh linuxlab "mail -s \"$subj\" $receiver <<< \"$message\""
+fi

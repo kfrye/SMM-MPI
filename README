@@ -1,6 +1,5 @@
 1. Add utitlites folder to your path:
 
-
 export PATH=$PATH:/smmProject/utilities
 
 REMINDER:

@@ -1,23 +1,25 @@
 #!/bin/bash
 
 myhelp() {
-    echo " Compile all available NASA benchmarks"
-    echo "    -n    Max nprocs"
-    echo "Example: compileAllTests -n 64"
+    echo "Compile all available NASA benchmarks"
+    echo "    -t    testtypes"
+    echo "Example: compileAllTests -t \"ep ft bt mg\""
     exit 1
 }
 
-if [[ "$#" -le 1 ]]; then
-    myhelp
-fi
+#if [[ "$#" -le 1 ]]; then
+#    myhelp
+#fi
+EXTENSIONS=("full" "simple" "fortran" "epio")
+SIZES=("S" "W" "A" "B" "C" "D")
+TESTS=("bt" "cg" "ep" "ft" "is" "lu" "mg" "sp")
 SCRIPT=$@
 while [[ $# > 1 ]]
 do
 key="$1"
-
 case $key in
-    -n)
-    MAX=$2
+    -t)
+    TESTS=$(echo $2 | tr " " "\n")
     shift # past argument
     ;;
     *)
@@ -30,9 +32,10 @@ shift # past argument or value
 done
 
 if hostname | grep wyeasthead ; then
-    sshrun -t ssh -c "compileAllTests -n $MAX" &>/dev/null &
+    ssh wyeast01 compileAllTests >|/home/konstan2/wyeast01Comilation &
 fi
 
+MAX=128
 MIN=1
 x=1
 
@@ -43,13 +46,19 @@ rm *
 hostname >| compiledby
 date >> compiledby
 cd ..
-for i in ep bt ft; do
-    for j in S W A B C D; do
+for i in ${TESTS[*]}; do
+    for j in ${SIZES[*]}; do
+        echo "i $i"
+        echo "j $j"
+        echo "max $MAX"
         while [ $x -le $MAX ]; do
             echo $i $j $x
             echo "making $i NPROCS=$x CLASS=$j"
             if [ $i == "bt" ]; then
-                make $i NPROCS=$x CLASS=$j SUBTYPE=full
+                for e in ${EXTENSIONS[*]}; do
+                    make $i NPROCS=$x CLASS=$j SUBTYPE=$e
+                done
+                make $i NPROCS=$x CLASS=$j
             else
                 make $i NPROCS=$x CLASS=$j
             fi

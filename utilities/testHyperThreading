@@ -1,0 +1,35 @@
+#!/bin/bash
+
+
+ACTUALCPU=4
+LOGICALCPU=8
+HT=false
+
+prev=`ssh wyeast01 "cat /proc/cpuinfo | grep processor | wc -l"`
+
+if [ "$prev" = "$ACTUALCPU" ]; then
+    HT=false
+elif [ "$prev" = "$LOGICALCPU" ]; then
+    HT=true
+else
+    echo "FAIL: unexpected number of CPUs"
+    exit 1
+fi
+
+for node in wyeast{02..17}; do
+    c=`ssh $node "cat /proc/cpuinfo | grep processor | wc -l"`
+    if ! [ "$prev" = "$c" ]; then
+        echo "FAIL: not all nodes have the same HT configuration"
+        exit 10
+    fi
+    prev=$c
+done
+
+if $HT; then
+    echo "HyperThreading is on"
+    export HT="1"
+    echo $HT
+else
+    echo "HyperThreading is off"
+    export HT="0"
+fi

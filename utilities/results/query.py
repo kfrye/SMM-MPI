@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/usr/bin/python3
 import sqlite3
 import json
 import sys
@@ -22,14 +22,14 @@ else:
   print("ht must be set to 'on' or 'off'")
   exit(1)
 
-if test not in ["ep", "bt", "ft", "lu", "sp", "mg"]:
-  print("The test type must be 'ep', 'bt', 'ft', 'lu', 'sp', or 'mg'")
+if test not in ["ep", "bt", "bta", "ft", "lu", "sp", "mg"]:
+  print("The test type must be 'ep', 'bt', 'bta', 'ft', 'lu', 'sp', or 'mg'")
   exit(1)
 
 conn = sqlite3.connect('results.db')
 classes = ["S", "W", "A", "B", "C"]
 
-if test != "bt" and test != "sp":
+if test != "bta" and test != "sp" and test != "bt":
   proc_1 = [1, 2, 4, 8, 16]
   proc_4 = [4, 8, 16, 32, 64]
 else:
@@ -55,5 +55,7 @@ for p in processes:
     if str_data != 'None':
       num = float(str_data)
       print(round(num,2), end="\t") 
+    else:
+      print(str_data, end="\t")
 print('\n')
 conn.close()

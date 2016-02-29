@@ -1,0 +1,112 @@
+#!/bin/bash
+
+myhelp() {
+    echo " Run all configurations of a single benchmark"
+    echo " Execute a benchamrk with all combminations of the following set of parameters:"
+    echo " 1. Number of CPUs in range 1 - 16"
+    echo " 2. Number of CPUs per node either 1 or 4"
+    echo " 3. SMI type : 0 no smi, 1 short smi, 2 long smi"
+    echo ""
+    echo "  Available options:"
+    echo "    TYPE:      | NAME:          | Arg TYPE: | Description"
+    echo "---------------+----------------+-----------+-----------------------"
+    echo "    [required] | --bench        | <STRING>  | Benchmark name, expected to be one of: [BT, SP, LU, CG, MG, FT,EP]"
+    echo "    [optional] | --mock         | <NOARG>   | (default=false)"
+    echo "    [optional] | --nexperiments | <NUMBER>  | number of experiments  (default=6)"
+    echo "    [optional] | --clusterSize  | <NUMBER>  | number of nodes to execute experiment on (MAX =16, default=16) "
+    echo "    [optional] | --maxWorldSize | <LETTER>  | maximum size of the world (MAX =D, default=C, available = [S,W,A,B,C,D] - ascending order , S the smallest and D the biggest) "
+    echo ""
+    echo "Example: run --bench EP"
+    exit 1
+}
+
+if [[ "$#" -le 1 ]]; then
+    myhelp
+fi
+
+##############################################
+##############################################
+##
+## Default variables section
+##
+##############################################
+##############################################
+
+SCRIPT=$@
+MOCK=false
+ALLSIZES="S W A B C D"
+SMITYPE=(0 1 2)
+AVAILABLENODES=16
+OUTPUTF="/smmProject/benchmarkLog.txt"
+NEXPERIMENTS=6
+BENCHMARKSRUNNER="benchmarksRunner"
+MAXSIZE=C
+NPROCS="1 4"
+BENCHNAME="?"
+
+
+#PARSING ARGUMENTS HERE
+while [[ $# > 1 ]]
+do
+key="$1"
+
+
+case $key in
+    --bench)
+    BENCHNAME="$2"
+    shift # past argument
+    ;;
+    --maxWorldSize)
+    MAXSIZE="$2"
+    shift # past argument
+    ;;
+    --nexperiments)
+    NEXPERIMENTS="$2"
+    shift # past argument
+    ;;
+    --clusterSize)
+    AVAILABLENODES="$2"
+    shift # past argument
+    ;;
+    --mock)
+    MOCK=true
+    shift # past argument
+    ;;
+    *)
+    echo "Unknown argument encountered : $key . Exit"
+    myhelp
+            # unknown option
+    ;;
+esac
+shift # past argument or value
+done
+
+## testHyperThreading will test HT status on all nodes and set env variable HT to 0/1
+source testHyperThreading
+
+
+benchname=`echo "$BENCHNAME" | awk '{print tolower($0)}'`
+
+if ! { [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; } then
+    echo "must run in tmux"
+    exit 1
+fi
+
+if echo $SCRIPT | grep "mock" &>/dev/null ;then 
+    MOCK=true
+fi
+
+SIZE=`echo $ALLSIZES | sed "s/$MAXSIZE.*/$MAXSIZE/"`
+
+command="benchmarksRunner  --minprocs $nproc --hfile /smmProject/hosts$nproc --type $benchname --worldsizes \"$SIZE\" --maxnodes $AVAILABLENODES --enum $NEXPERIMENTS --smitype $stype >> $OUTPUTF"
+
+
+for nproc in $NPROCS; do
+    for stype in ${SMITYPE[*]}; do
+        if $MOCK; then
+            echo $command
+        else 
+            benchmarksRunner  --minprocs $nproc --hfile /smmProject/hosts$nproc --type $benchname --worldsizes "$SIZE" --maxnodes $AVAILABLENODES --enum $NEXPERIMENTS --smitype $stype --mock >> $OUTPUTF
+        fi
+    done
+done
