@@ -105,8 +105,9 @@ for nproc in $NPROCS; do
     for stype in ${SMITYPE[*]}; do
         if $MOCK; then
             echo $command
-        else 
             benchmarksRunner  --minprocs $nproc --hfile /smmProject/hosts$nproc --type $benchname --worldsizes "$SIZE" --maxnodes $AVAILABLENODES --enum $NEXPERIMENTS --smitype $stype --mock >> $OUTPUTF
+        else 
+            benchmarksRunner  --minprocs $nproc --hfile /smmProject/hosts$nproc --type $benchname --worldsizes "$SIZE" --maxnodes $AVAILABLENODES --enum $NEXPERIMENTS --smitype $stype >> $OUTPUTF
         fi
     done
 done
